@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface TableData {
   id: number;
   name: string;
@@ -550,7 +552,9 @@ export default function UserContent() {
             <div className="col-12">
               <div className="page-title-box">
                 <div className="page-title-right">
-                  <button className="btn btn-outline-primary mx-18">Nouveau</button>
+                  <Link to="user-create">
+                    <button className="btn btn-outline-primary mx-18">Nouveau</button>
+                  </Link>
                   <button className="btn btn-outline-primary mx-18">Lister</button>
                   <button className="btn btn-outline-primary mx-18">Rechercher</button>
                 </div>

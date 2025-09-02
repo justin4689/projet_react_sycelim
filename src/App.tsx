@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardLayout from "./layouts/DashboardLayout";
 import UserList from "./pages/UserList";
+import UserCreatePage from "./pages/UserCreatePage";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
-           <Route index element={<UserList />} /> 
+            <Route index element={<UserList />} /> 
+            <Route path="user-create" element={<UserCreatePage />} />
           </Route>
         </Routes>
       </BrowserRouter>
