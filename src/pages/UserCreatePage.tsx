@@ -1,8 +1,9 @@
 import React from 'react';
 import DynamicForm from '../components/DynamicForm';
+import type { FormConfig } from '../types/formConfig';
 
-// Votre configuration JSON
- export const userConfig = {
+// Votre configuration JSON avec le bon typage
+ export const userConfig: FormConfig = {
   title: "Utilisateurs",
   boutons: [
     { type: "bttn", labl: "Nouveau", fonc: "" },
@@ -13,7 +14,7 @@ import DynamicForm from '../components/DynamicForm';
   search_case:
 	{
     subtitle:"Recherche",
-		display:"popup" as  const,
+		display:"popup" as const,
 		uri:"/web/users/search",
     table:
 		[
@@ -40,7 +41,7 @@ import DynamicForm from '../components/DynamicForm';
     table: [
       {
         nom: "user_nom",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "40",
         lbl: "Nom",
@@ -50,7 +51,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_prenoms",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "60",
         lbl: "Prénoms",
@@ -60,7 +61,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_genre",
-        chp: "cmbo",
+        chp: "cmbo" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Genre",
@@ -70,7 +71,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_date",
-        chp: "date",
+        chp: "date" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Date naissance",
@@ -80,7 +81,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_login",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "25",
         lbl: "Login",
@@ -90,7 +91,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_password",
-        chp: "pswd",
+        chp: "pswd" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Mot de passe",
@@ -100,7 +101,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_password2",
-        chp: "pswd",
+        chp: "pswd" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Confirmer le mot de passe",
@@ -110,7 +111,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_email",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "50",
         lbl: "E-mail",
@@ -120,7 +121,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_mobile",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "10",
         lbl: "Mobile",
@@ -130,7 +131,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_photo",
-        chp: "file",
+        chp: "file" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Photo",
@@ -140,7 +141,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_active",
-        chp: "cmbo",
+        chp: "cmbo" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Activation",
@@ -166,23 +167,19 @@ import DynamicForm from '../components/DynamicForm';
     display: "page" as const,
     uri: "/web/users/edit",
     table: [
-      
-      
-      { nom:"user_id", 
-        chp:"hide",  
-        
-        stt:"obl", 
-        nbr:"0",	
-        
-        lbl:"User ID",
-        cas:"ind",
-        rly:"1",
-         val:""
-        
-        },,
+      {
+        nom: "user_id",
+        chp: "hide" as const,
+        stt: "obl",
+        nbr: "0",
+        lbl: "User ID",
+        cas: "ind",
+        rly: "1",
+        val: ""
+      },
       {
         nom: "user_nom",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "40",
         lbl: "Nom",
@@ -192,7 +189,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_prenoms",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "60",
         lbl: "Prénoms",
@@ -202,7 +199,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_genre",
-        chp: "cmbo",
+        chp: "cmbo" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Genre",
@@ -212,7 +209,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_date",
-        chp: "date",
+        chp: "date" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Date naissance",
@@ -222,7 +219,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_login",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "25",
         lbl: "Login",
@@ -232,7 +229,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_password",
-        chp: "pswd",
+        chp: "pswd" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Mot de passe",
@@ -242,7 +239,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_password2",
-        chp: "pswd",
+        chp: "pswd" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Confirmer le mot de passe",
@@ -252,7 +249,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_email",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "50",
         lbl: "E-mail",
@@ -262,7 +259,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_mobile",
-        chp: "text",
+        chp: "text" as const,
         stt: "obl",
         nbr: "10",
         lbl: "Mobile",
@@ -272,7 +269,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_photo",
-        chp: "file",
+        chp: "file" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Photo",
@@ -282,7 +279,7 @@ import DynamicForm from '../components/DynamicForm';
       },
       {
         nom: "user_active",
-        chp: "cmbo",
+        chp: "cmbo" as const,
         stt: "obl",
         nbr: "0",
         lbl: "Activation",
@@ -301,8 +298,7 @@ import DynamicForm from '../components/DynamicForm';
       { type: "rset", labl: "Réinitialiser" },
       { type: "sbmt", labl: "Valider", fonc: "" }
     ]
-  }
-,
+  },
 
   list_case:
   {

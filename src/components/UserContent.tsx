@@ -62,16 +62,17 @@ export default function UserContent({ config }: { config: FormConfig }) {
                       <tbody>
                         {config.list_case.table.map((item) => (
                           <tr key={item.nom}>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
-                            <td>{item.val}</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                           
                            
                             
                             <td className="d-flex justify-content-center">

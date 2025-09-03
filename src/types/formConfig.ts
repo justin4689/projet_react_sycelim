@@ -1,117 +1,98 @@
-export interface FormField {
-  nom: string;
-  chp: string;  // Type de champ (text, date, cmbo, pswd, file, hide)
-  stt: string;   // Obligatoire ou non
-  nbr: string;   // Nombre de caractères max
-  lbl: string;   // Label du champ
-  cas: string;   // Casse (maj, min, ufr, ind)
-  rly: string;   // En lecture seule ?
-  val: string;   // Valeur par défaut
-}
+// Types de base
+export type FieldType = 'text' | 'date' | 'cmbo' | 'pswd' | 'file' | 'hide';
+export type DisplayType = 'page' | 'popup';
+export type CaseType = 'maj' | 'ufr' | 'ind' | 'min';
+export type PositionType = 'left' | 'center' | 'right';
 
-export interface FormEditField {
-  id: string;
-  nom: string;
-  chp: string;  // Type de champ (text, date, cmbo, pswd, file, hide)
-  stt: string;   // Obligatoire ou non
-  nbr: string;   // Nombre de caractères max
-  lbl: string;   // Label du champ
-  cas: string;   // Casse (maj, min, ufr, ind)
-  rly: string;   // En lecture seule ?
-  val: string;   // Valeur par défaut
-}
-
-
-
-export  interface SearchField {
-  nom: string;
- 
-  lbl: string;   
-  
-}
-
-export interface FormConfig {
-  title: string;
-  boutons: ButtonConfig[];
-  new_case: {
-    subtitle: string;
-    display: 'page' | 'popup';
-    uri: string;
-    table: FormField[];
-    autocomp: any[];
-    column: string;
-    options: Record<string, string[]>;
-    boutons: ButtonConfig[];
-  };
-  search_case: {
-    subtitle: string;
-    display: 'page' | 'popup';
-    uri: string;
-    table: SearchField[];
-    boutons: ButtonConfig[];
-  };
-
-  edit_case: {
-    subtitle: string;
-    display: 'page' | 'popup';
-    uri: string;
-    table: FormEditField[];
-    autocomp: any[];
-    column: string;
-    options: Record<string, string[]>;
-    boutons: ButtonConfig[];
-  };
-
-
-
-  list_case : {
-    subtitle: string;
-    display: 'page' | 'popup';
-    uri: string;
-    table: FormField[];
-    icon_btns: IconButtonConfig[];
-
-  };
-
-
-  print_case: {
-    subtitle: string;
-    display: 'page' | 'popup';
-    uri: string;
-    table: FormField[];
-    labels: {
-      user_nom: string ;
-      user_prenoms:  string ;
-      user_genre : string ;
-      user_login : string ;
-      user_email : string ; 
-      user_mobile : string ;
-      user_active :  string ; 
-      user_creation :  string 
-
-    }
-  
-  };
-
-
-
-
-
-
-
-
-  // Ajoutez les autres cas (edit_case, list_case, etc.) de la même manière
-}
-
+// Interfaces pour les boutons
 export interface ButtonConfig {
   type: string;
   labl: string;
   fonc?: string;
 }
 
-
 export interface IconButtonConfig {
-  img : string ; 
-  tltp: string ; 
-  fonc : string ; 
+  img: string;
+  tltp: string;
+  fonc: string;
+}
+
+// Interfaces pour les champs de formulaire
+export interface FormField {
+  nom: string;
+  chp: FieldType;
+  stt: string;
+  nbr: string;
+  lbl: string;
+  cas: CaseType;
+  rly: string;
+  val: string;
+}
+
+export interface SearchField {
+  nom: string;
+  lbl: string;
+}
+
+export interface ListField {
+  nom: string;
+  pos: PositionType;
+  lbl: string;
+}
+
+// Interfaces pour chaque section
+export interface SearchCase {
+  subtitle: string;
+  display: DisplayType;
+  uri: string;
+  table: SearchField[];
+  boutons: ButtonConfig[];
+}
+
+export interface NewCase {
+  subtitle: string;
+  display: DisplayType;
+  uri: string;
+  table: FormField[];
+  autocomp: any[];
+  column: string;
+  options: Record<string, string[]>;
+  boutons: ButtonConfig[];
+}
+
+export interface EditCase {
+  subtitle: string;
+  display: DisplayType;
+  uri: string;
+  table: FormField[];
+  autocomp: any[];
+  column: string;
+  options: Record<string, string[]>;
+  boutons: ButtonConfig[];
+}
+
+export interface ListCase {
+  subtitle: string;
+  display: DisplayType;
+  uri: string;
+  table: ListField[];
+  icon_btns: IconButtonConfig[];
+}
+
+export interface PrintCase {
+  subtitle: string;
+  display: DisplayType;
+  uri: string;
+  labels: Record<string, string>;
+}
+
+// Interface principale
+export interface FormConfig {
+  title: string;
+  boutons: ButtonConfig[];
+  search_case: SearchCase;
+  new_case: NewCase;
+  edit_case: EditCase;
+  list_case: ListCase;
+  print_case: PrintCase;
 }
