@@ -16,7 +16,7 @@ const TopBarRight = () => {
       {/* Language Dropdown */}
       <li className="dropdown">
         <a className="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-          <img src="assets/images/flags/us.jpg" alt="user-image" className="me-0 me-sm-1" height="12" />
+          <img src="/assets/images/flags/us.jpg" alt="user-image" className="me-0 me-sm-1" height="12" />
           <span className="align-middle d-none d-lg-inline-block">English</span> <i className="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
         </a>
         <div className="dropdown-menu dropdown-menu-end dropdown-menu-animated">
@@ -71,7 +71,7 @@ const TopBarRight = () => {
               {['slack', 'github', 'dribbble', 'bitbucket', 'dropbox', 'g-suite'].map((app) => (
                 <div key={app} className="col-4 text-center">
                   <a className="dropdown-icon-item d-block p-2" href="#">
-                    <img src={`assets/images/brands/${app}.png`} alt={app} className="img-fluid" />
+                    <img src={`/assets/images/brands/${app}.png`} alt={app} className="img-fluid" />
                     <div className="mt-1">{app.charAt(0).toUpperCase() + app.slice(1)}</div>
                   </a>
                 </div>
@@ -106,7 +106,7 @@ const TopBarRight = () => {
       <li className="dropdown">
         <a className="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
           <span className="account-user-avatar">
-            <img src="assets/images/users/avatar-1.jpg" alt="user-image" width="32" className="rounded-circle" />
+            <img src="/assets/images/users/avatar-1.jpg" alt="user-image" width="32" className="rounded-circle" />
           </span>
           <span className="d-lg-flex flex-column gap-1 d-none">
             <h5 className="my-0">Dominic Keller</h5>

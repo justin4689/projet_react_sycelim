@@ -1,26 +1,27 @@
+import { Link } from 'react-router-dom';
 
 const SidebarHeader = () => {
   return (
     <>
       {/* Brand Logo Light */}
-      <a href="index.html" className="logo logo-light">
+      <Link to="/" className="logo logo-light">
         <span className="logo-lg">
-          <img src="assets/images/logo.png" alt="logo"/>
+          <img src="/assets/images/logo.png" alt="logo"/>
         </span>
         <span className="logo-sm">
-          <img src="assets/images/logo-sm.png" alt="small logo"/>
+          <img src="/assets/images/logo-sm.png" alt="small logo"/>
         </span>
-      </a>
+      </Link>
 
       {/* Brand Logo Dark */}
-      <a href="index.html" className="logo logo-dark">
+      <Link to="/" className="logo logo-dark">
         <span className="logo-lg">
-          <img src="assets/images/logo-dark.png" alt="dark logo" />
+          <img src="/assets/images/logo-dark.png" alt="dark logo" />
         </span>
         <span className="logo-sm">
-          <img src="assets/images/logo-dark-sm.png" alt="small logo" />
+          <img src="/assets/images/logo-dark-sm.png" alt="small logo" />
         </span>
-      </a>
+      </Link>
 
       {/* Sidebar Hover Menu Toggle Button */}
       <div className="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
@@ -34,10 +35,10 @@ const SidebarHeader = () => {
 
       {/* Leftbar User */}
       <div className="leftbar-user">
-        <a href="pages-profile.html">
-          <img src="assets/images/users/avatar-1.jpg" alt="user-image" height="42" className="rounded-circle shadow-sm" />
+        <Link to="pages-profile.html">
+          <img src="/assets/images/users/avatar-1.jpg" alt="user-image" height="42" className="rounded-circle shadow-sm" />
           <span className="leftbar-user-name mt-2">Dominic Keller</span>
-        </a>
+        </Link>
       </div>
     </>
   );

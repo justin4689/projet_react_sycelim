@@ -1,11 +1,32 @@
 import { Link } from "react-router-dom";
 import type { FormConfig } from '../types/formConfig';
-
-
+import Pagination from "./Pagination";
+import { useState } from "react";
 
 export default function UserContent({ config }: { config: FormConfig }) {
-  // Données du tableau
- 
+  // Données du tableau (pour l'instant statiques)
+  const users = Array.from({ length: 200 }, (_, index) => {
+    const id = index + 1;
+    return {
+      user_id: id,
+      user_nom: `Nom ${id}`,
+      user_prenoms: `Prénom ${id}`,
+      user_genre: id % 2 === 0 ? "Masculin" : "Feminin",
+      user_date: `199${id % 10}-0${(id % 9) + 1}-15`,
+      user_login: `user${id}`,
+      user_email: `user${id}@example.com`,
+      user_mobile: `0700000${(id % 1000).toString().padStart(3, '0')}`,
+      user_active: id % 3 === 0 ? "Non" : "Oui",
+      user_creation: `2024-0${(id % 9) + 1}-01`,
+    };
+  });
+
+  const pageSize = 10 ;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(users.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedUsers = users.slice(startIndex, startIndex + pageSize);
 
   // Fonction pour gérer les actions
   const handleView = (id: number) => {
@@ -60,38 +81,35 @@ export default function UserContent({ config }: { config: FormConfig }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {config.list_case.table.map((item) => (
-                          <tr key={item.nom}>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                           
-                           
-                            
+                        {paginatedUsers.map((user) => (
+                          <tr key={user.user_id}>
+                            <td>{user.user_id}</td>
+                            <td>{user.user_nom}</td>
+                            <td>{user.user_prenoms}</td>
+                            <td>{user.user_genre}</td>
+                            <td>{user.user_date}</td>
+                            <td>{user.user_login}</td>
+                            <td>{user.user_email}</td>
+                            <td>{user.user_mobile}</td>
+                            <td>{user.user_active}</td>
+                            <td>{user.user_creation}</td>
                             <td className="d-flex justify-content-center">
                               <button 
-                                onClick={() => handleView(2)} 
+                                onClick={() => handleView(user.user_id)} 
                                 className="action-icon view border-0 bg-transparent" 
                                 title="Voir"
                               >
                                 <i className="mdi mdi-eye"></i>
                               </button>
                               <button 
-                                onClick={() => handleEdit(2)}
+                                onClick={() => handleEdit(user.user_id)}
                                 className="action-icon edit border-0 bg-transparent" 
                                 title="Modifier"
                               >
                                 <i className="mdi mdi-square-edit-outline"></i>
                               </button>
                               <button 
-                                onClick={() => handleDelete(2)}
+                                onClick={() => handleDelete(user.user_id)}
                                 className="action-icon delete border-0 bg-transparent" 
                                 title="Supprimer"
                               >
@@ -102,6 +120,16 @@ export default function UserContent({ config }: { config: FormConfig }) {
                         ))}
                       </tbody>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center mt-2">
+                      <div className="text-muted ">
+                        {`Showing ${startIndex + 1} to ${Math.min(startIndex + paginatedUsers.length, users.length)} of ${users.length} entries`}
+                      </div>
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

@@ -21,7 +21,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<UserList />} /> 
-            <Route path="user-create" element={<UserCreatePage />} />
+            <Route path="user-create" element={<UserCreatePage/>} />
           </Route>
         </Routes>
       </BrowserRouter>
