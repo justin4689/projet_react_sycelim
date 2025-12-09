@@ -1,5 +1,5 @@
 import UserContent from "../components/UserContent";
-import  {userConfig} from "./UserCreatePage";
+import  {userConfig} from "../types/data";
 
 
 export default function UserList() {
