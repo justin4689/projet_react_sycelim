@@ -235,27 +235,38 @@ export default function UserContent({ config }: { config: FormConfig }) {
                         ))}
                       </thead>
                       <tbody>
-                        {table.getRowModel().rows.map((row) => (
-                          <tr key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                              <td
-                                key={cell.id}
-                                className={
-                                  cell.column.id === "actions"
-                                    ? "text-center"
-                                    : undefined
-                                }
-                              >
-                                {typeof cell.column.columnDef.cell ===
-                                "function"
-                                  ? cell.column.columnDef.cell(
-                                      cell.getContext()
-                                    )
-                                  : (cell.getValue() as any)}
-                              </td>
-                            ))}
+                        {table.getRowModel().rows.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={table.getVisibleLeafColumns().length}
+                              className="text-start"
+                            >
+                              No matching records found
+                            </td>
                           </tr>
-                        ))}
+                        ) : (
+                          table.getRowModel().rows.map((row) => (
+                            <tr key={row.id}>
+                              {row.getVisibleCells().map((cell) => (
+                                <td
+                                  key={cell.id}
+                                  className={
+                                    cell.column.id === "actions"
+                                      ? "text-center"
+                                      : undefined
+                                  }
+                                >
+                                  {typeof cell.column.columnDef.cell ===
+                                  "function"
+                                    ? cell.column.columnDef.cell(
+                                        cell.getContext()
+                                      )
+                                    : (cell.getValue() as any)}
+                                </td>
+                              ))}
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                     <div className="d-flex justify-content-between align-items-center mt-2">
