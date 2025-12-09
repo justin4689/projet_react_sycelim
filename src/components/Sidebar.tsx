@@ -22,6 +22,18 @@ export default function Sidebar() {
         { label: 'Utilisateur', href: 'data-table.html' },
       ],
     },
+
+      {
+      id: 'sidebarsession',
+      title: 'Sessions',
+  icon: 'uil-clock',        
+    },
+    {
+      id: 'sidebarparametre',
+      title: 'Paramètres',
+  icon: 'uil-setting',      // ou 'uil-cog' / 'uil-sliders-v-alt'
+   
+    },
   ];
 
   return (

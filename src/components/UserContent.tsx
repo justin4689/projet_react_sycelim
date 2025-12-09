@@ -45,8 +45,8 @@ export default function UserContent({ config }: { config: FormConfig }) {
   };
 
   return (
-    <div className="content-page">       
-      <div className="content">
+    <div className="">       
+      <div className="">
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">

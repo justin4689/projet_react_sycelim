@@ -1,6 +1,7 @@
 import React from 'react';
 import DynamicForm from '../components/DynamicForm';
 import type { FormConfig } from '../types/formConfig';
+import StaticForm from '../components/StaticForm';
 
 // Votre configuration JSON avec le bon typage
  export const userConfig: FormConfig = {
@@ -350,34 +351,12 @@ import type { FormConfig } from '../types/formConfig';
 };
 
 const UserCreatePage: React.FC = () => {
-  const handleSubmit = (formData: Record<string, any>) => {
-    console.log('Données du formulaire soumises:', formData);
-    // Ici, vous pouvez envoyer les données à votre API
-    // Exemple avec fetch :
-    /*
-    fetch(userConfig.new_case.uri, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Succès:', data);
-    })
-    .catch((error) => {
-      console.error('Erreur:', error);
-    });
-    */
-  };
+
 
   return (
-    <div className="container-fluid">
-      <DynamicForm 
-        config={userConfig} 
-        onSubmit={handleSubmit} 
-      />
+    <div className="">
+     
+      <StaticForm/>
     </div>
   );
 };
