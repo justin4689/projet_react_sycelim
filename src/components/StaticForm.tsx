@@ -164,7 +164,7 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customSwitch1"
                           >
-                            Toggle this switch element
+                            Activer ou désactiver ce commutateur
                           </label>
                         </div>
                       </div>
@@ -182,7 +182,7 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customRadio1"
                           >
-                            Toggle this custom radio
+                            Sélectionner cette option
                           </label>
                         </div>
                       </div>
@@ -337,7 +337,7 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customSwitch1"
                           >
-                            Toggle this switch element
+                            Activer ou désactiver ce commutateur
                           </label>
                         </div>
                       </div>
@@ -355,7 +355,7 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customRadio1"
                           >
-                            Toggle this custom radio
+                            Sélectionner cette option
                           </label>
                         </div>
                       </div>
@@ -494,11 +494,8 @@ const StaticForm: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                   <div className="col-md-4">
-                     <div
-                        className="mb-3 w-100"
-                        id="custom-switch-preview"
-                      >
+                    <div className="col-md-4">
+                      <div className="mb-3 w-100" id="custom-switch-preview">
                         <div className="form-check form-switch">
                           <input
                             type="checkbox"
@@ -509,14 +506,13 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customSwitch1"
                           >
-                            Toggle this switch element
+                            Activer ou désactiver ce commutateur
                           </label>
                         </div>
                       </div>
-                    
-                   </div>
-                   <div className="col-md-4">
-                     <div className="mb-3 w-100">
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3 w-100">
                         <div className="form-check">
                           <input
                             type="radio"
@@ -528,12 +524,11 @@ const StaticForm: React.FC = () => {
                             className="form-check-label"
                             htmlFor="customRadio1"
                           >
-                            Toggle this custom radio
+                            Sélectionner cette option
                           </label>
                         </div>
                       </div>
-
-                   </div>
+                    </div>
                   </div>
                   <hr className="hr-button" />
                   <div className="d-flex justify-content-end px-4">
