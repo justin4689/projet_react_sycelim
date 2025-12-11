@@ -149,6 +149,44 @@ const StaticForm: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                    <div className="col-md-12">
+                      <div
+                        className="tab-pane show active"
+                        id="custom-switch-preview"
+                      >
+                        <div className="form-check form-switch">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customSwitch1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customSwitch1"
+                          >
+                            Toggle this switch element
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mt-3">
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            id="customRadio1"
+                            name="customRadio"
+                            className="form-check-input"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customRadio1"
+                          >
+                            Toggle this custom radio
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <hr className="hr-button" />
                   <div className="d-flex justify-content-end px-4">
@@ -279,6 +317,45 @@ const StaticForm: React.FC = () => {
                             htmlFor="form2CheckConditions"
                           >
                             J'accepte les conditions générales
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div
+                        className="tab-pane show active"
+                        id="custom-switch-preview"
+                      >
+                        <div className="form-check form-switch">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customSwitch1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customSwitch1"
+                          >
+                            Toggle this switch element
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mt-3">
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            id="customRadio1"
+                            name="customRadio"
+                            className="form-check-input"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customRadio1"
+                          >
+                            Toggle this custom radio
                           </label>
                         </div>
                       </div>
@@ -417,6 +494,46 @@ const StaticForm: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                   <div className="col-md-4">
+                     <div
+                        className="mb-3 w-100"
+                        id="custom-switch-preview"
+                      >
+                        <div className="form-check form-switch">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customSwitch1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customSwitch1"
+                          >
+                            Toggle this switch element
+                          </label>
+                        </div>
+                      </div>
+                    
+                   </div>
+                   <div className="col-md-4">
+                     <div className="mb-3 w-100">
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            id="customRadio1"
+                            name="customRadio"
+                            className="form-check-input"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customRadio1"
+                          >
+                            Toggle this custom radio
+                          </label>
+                        </div>
+                      </div>
+
+                   </div>
                   </div>
                   <hr className="hr-button" />
                   <div className="d-flex justify-content-end px-4">
