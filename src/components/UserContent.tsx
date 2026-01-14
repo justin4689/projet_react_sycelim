@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { FormConfig } from "../types/formConfig";
 import Pagination from "./Pagination";
 import { useMemo, useState } from "react";
@@ -23,6 +23,8 @@ type User = {
 };
 
 export default function UserContent({ config }: { config: FormConfig }) {
+  const navigate = useNavigate();
+
   // Données du tableau (pour l'instant statiques)
   const users: User[] = Array.from({ length: 200 }, (_, index) => {
     const id = index + 1;
@@ -120,8 +122,7 @@ export default function UserContent({ config }: { config: FormConfig }) {
 
   // Fonction pour gérer les actions
   const handleView = (id: number) => {
-    console.log("View item:", id);
-    // Implémenter la logique de visualisation
+    navigate(`/dashboard/user-details/${id}`);
   };
 
   const handleEdit = (id: number) => {
@@ -143,16 +144,113 @@ export default function UserContent({ config }: { config: FormConfig }) {
               <div className="page-title-box">
                 <div className="page-title-right">
                   <Link to="user-create">
-                    <button className="btn btn-outline-primary mx-18">
+                    <button className="btn btn-outline-primary mx-12">
                       {config.boutons[0].labl}
                     </button>
                   </Link>
-                  <button className="btn btn-outline-primary mx-18">
+                  <button className="btn btn-outline-primary mx-12">
                     {config.boutons[1].labl}
                   </button>
-                  <button className="btn btn-outline-primary mx-18">
+                  <button
+                    className="btn btn-outline-primary mx-12"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                  >
                     {config.boutons[2].labl}
                   </button>
+                  <div
+                    className="modal fade"
+                    id="staticBackdrop"
+                    data-bs-backdrop="static"
+                    data-bs-keyboard="false"
+                    tabIndex={-1}
+                    aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-dialog-centered">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="staticBackdropLabel">
+                            Rechercher
+                          </h5>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <form className="" action="#">
+                          <div className="modal-body">
+                            <div className="mb-3">
+                              <input
+                                className="form-control"
+                                type="email"
+                                id="username"
+                                required
+                                placeholder="Rechercher..."
+                              />
+                            </div>
+
+                            <div className=" d-flex gap-3">
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  name
+                                </label>
+                              </div>
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  position
+                                </label>
+                              </div>
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  salary
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="modal-footer">
+                            <button
+                              className="btn btn-outline-primary"
+                              type="submit"
+                              style={{
+                                marginRight: "2px",
+                                marginBottom: "2px",
+                              }}
+                            >
+                              Rechercher
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <h4 className="page-title">{config.title}</h4>
               </div>
@@ -184,10 +282,10 @@ export default function UserContent({ config }: { config: FormConfig }) {
                           <option value={50}>50</option>
                           <option value={100}>100</option>
                         </select>
-                        <span className="ms-2">entries par pages </span>
+                        <span className="ms-2">éléments par page</span>
                       </div>
                       <div className="d-flex align-items-center">
-                        <span className="me-2">Search:</span>
+                        <span className="me-2">Recherche:</span>
                         <input
                           type="search"
                           className="form-control form-control-sm"
@@ -202,7 +300,7 @@ export default function UserContent({ config }: { config: FormConfig }) {
                     </div>
                     <table
                       id="basic-datatable"
-                      className="table table-bordered dt-responsive nowrap w-100 mb-0"
+                      className="table table-bordered  dt-responsive nowrap w-100 mb-0"
                     >
                       <thead className="table-light">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -241,7 +339,7 @@ export default function UserContent({ config }: { config: FormConfig }) {
                               colSpan={table.getVisibleLeafColumns().length}
                               className="text-start"
                             >
-                              No matching records found
+                              Aucun element trouvé
                             </td>
                           </tr>
                         ) : (
@@ -272,11 +370,11 @@ export default function UserContent({ config }: { config: FormConfig }) {
                     <div className="d-flex justify-content-between align-items-center mt-2">
                       <div className="text-muted ">
                         {filteredUsers.length === 0
-                          ? "Showing 0 to 0 of 0 entries"
-                          : `Showing ${startIndex + 1} to ${Math.min(
+                          ? "Affichage de 0 à 0 sur 0 éléments"
+                          : `Affichage de ${startIndex + 1} à ${Math.min(
                               startIndex + paginatedUsers.length,
                               filteredUsers.length
-                            )} of ${filteredUsers.length} entries`}
+                            )} sur ${filteredUsers.length} éléments`}
                       </div>
                       <Pagination
                         currentPage={currentPage}

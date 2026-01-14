@@ -17,7 +17,7 @@ export default function Sidebar() {
       id: "sidebarTasks",
       title: "Administration",
       icon: "uil-building",
-      children: [{ label: "Utilisateur", href: "data-table.html" }],
+      children: [{ label: "Utilisateurs", href: "/dashboard" }],
     },
 
     {

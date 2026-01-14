@@ -10,18 +10,113 @@ const StaticForm: React.FC = () => {
             <div className="page-title-box">
               <div className="page-title-right">
                 <Link to="/dashboard/user-create">
-                  <button className="btn btn-outline-primary mx-18">
+                  <button className="btn btn-outline-primary mx-12">
                     Nouveau
                   </button>
                 </Link>
                 <Link to="/dashboard">
-                  <button className="btn btn-outline-primary mx-18">
+                  <button className="btn btn-outline-primary mx-12">
                     Lister
                   </button>
                 </Link>
-                <button className="btn btn-outline-primary mx-18">
+                <button className="btn btn-outline-primary mx-12"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">
                   Rechercher
                 </button>
+                   <div
+                    className="modal fade"
+                    id="staticBackdrop"
+                    data-bs-backdrop="static"
+                    data-bs-keyboard="false"
+                    tabIndex={-1}
+                    aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-dialog-centered">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="staticBackdropLabel">
+                            Rechercher
+                          </h5>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <form className="" action="#">
+                          <div className="modal-body">
+                            <div className="mb-3">
+                              <input
+                                className="form-control"
+                                type="email"
+                                id="username"
+                                required
+                                placeholder="Rechercher..."
+                              />
+                            </div>
+
+                            <div className=" d-flex gap-3">
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  name
+                                </label>
+                              </div>
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  position
+                                </label>
+                              </div>
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                >
+                                  salary
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="modal-footer">
+                            <button
+                              className="btn btn-outline-primary"
+                              type="submit"
+                              style={{
+                                marginRight: "2px",
+                                marginBottom: "2px",
+                              }}
+                            >
+                              Rechercher
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
               </div>
               <h4 className="page-title">Formulaires</h4>
             </div>
