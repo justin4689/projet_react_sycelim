@@ -342,6 +342,171 @@
           user_creation:"Date création"
       }
   }
+};
 
+
+export  const sessionConfg : FormConfig ={
+  title: "Sessions",
+  boutons: [
+    { type: "bttn", labl: "Lister", fonc: "" },
+    { type: "bttn", labl: "Rechercher", fonc: "" }
+  ],
+
+  search_case:
+	{
+    subtitle:"Recherche",
+		display:"popup" as const,
+		uri:"/web/sessions/search",
+    table:
+		[
+			{nom:"session_device",			lbl:"Device"				},
+			{nom:"session_location",		lbl:"Location"			},
+			{nom:"session_status",			lbl:"Status"			}
+		],
+    boutons:
+     [
+            {"type":"rset","labl":"Réinitialiser"},
+            {"type":"sbmt","labl":"Valider","fonc":""}
+     ]
+	},
+
+  new_case: {
+    subtitle: "Nouvelle session",
+    display: "page" as const,
+    uri: "/web/sessions/add",
+    table: [
+      {
+        nom: "session_device",
+        chp: "text" as const,
+        stt: "obl",
+        nbr: "80",
+        lbl: "Device",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      },
+      {
+        nom: "session_location",
+        chp: "text" as const,
+        stt: "obl",
+        nbr: "120",
+        lbl: "Location",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      },
+      {
+        nom: "session_status",
+        chp: "cmbo" as const,
+        stt: "obl",
+        nbr: "0",
+        lbl: "Status",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      }
+    ],
+    autocomp: [],
+    column: "3",
+    options: {
+      session_status: ["Active", "Inactive"]
+    },
+    boutons: [
+      { type: "rset", labl: "Réinitialiser" },
+      { type: "sbmt", labl: "Valider", fonc: "" }
+    ]
+  },
+
+  edit_case: {
+    subtitle: "Modification de session",
+    display: "page" as const,
+    uri: "/web/sessions/edit",
+    table: [
+      {
+        nom: "session_id",
+        chp: "hide" as const,
+        stt: "obl",
+        nbr: "0",
+        lbl: "Session ID",
+        cas: "ind",
+        rly: "1",
+        val: ""
+      },
+      {
+        nom: "session_device",
+        chp: "text" as const,
+        stt: "obl",
+        nbr: "80",
+        lbl: "Device",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      },
+      {
+        nom: "session_location",
+        chp: "text" as const,
+        stt: "obl",
+        nbr: "120",
+        lbl: "Location",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      },
+      {
+        nom: "session_status",
+        chp: "cmbo" as const,
+        stt: "obl",
+        nbr: "0",
+        lbl: "Status",
+        cas: "ind",
+        rly: "0",
+        val: ""
+      }
+    ],
+    autocomp: [],
+    column: "3",
+    options: {
+      session_status: ["Active", "Inactive"]
+    },
+    boutons: [
+      { type: "rset", labl: "Réinitialiser" },
+      { type: "sbmt", labl: "Valider", fonc: "" }
+    ]
+  },
+
+  list_case:
+  {
+  subtitle:"Liste des sessions",
+  display:"page",
+  uri:"/web/sessions/list",
+  table:
+      [
+          {nom:"session_device",				pos:"left",			lbl:"Device"				},
+          {nom:"session_location",			pos:"left",			lbl:"Location"			},
+          {nom:"session_login_time",		pos:"center",		lbl:"Login Time"			},
+          {nom:"session_last_activity",	pos:"center",		lbl:"Last Activity"		},
+          {nom:"session_status",			pos:"center",		lbl:"Status"				}
+      ],
+      icon_btns:
+      [
+          {img:"prnt",tltp:"Afficher",fonc:""},
+          {img:"delt",tltp:"Terminer",fonc:""}
+      ]
+  },
+
+  print_case:
+  {
+  subtitle:"Affichage session",
+  display:"page",
+  uri:"/web/sessions/dplay",
+  labels:
+      {
+          session_device:"Device",
+          session_location:"Location",
+          session_login_time:"Login Time",
+          session_last_activity:"Last Activity",
+          session_status:"Status"
+      }
+  }
 
 };
