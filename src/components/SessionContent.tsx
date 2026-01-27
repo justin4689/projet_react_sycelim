@@ -250,7 +250,7 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
                     role="dialog"
                     aria-hidden="true"
                   >
-                    <div className="modal-dialog modal-sm">
+                    <div className="modal-dialog modal-sm modal-dialog-centered">
                       <div className="modal-content modal-filled bg-danger">
                         <div className="modal-body p-4">
                           <div className="text-center">
