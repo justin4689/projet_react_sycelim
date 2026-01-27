@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export interface MenuItemType {
   id: string;
@@ -17,11 +18,11 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
   return (
     <li className="side-nav-item">
-      <a 
-        data-bs-toggle="collapse" 
-        href={`#${item.id}`} 
-        aria-expanded="false" 
-        aria-controls={item.id} 
+      <a
+        data-bs-toggle="collapse"
+        href={`#${item.id}`}
+        aria-expanded="false"
+        aria-controls={item.id}
         className="side-nav-link"
       >
         <i className={item.icon}></i>
@@ -33,7 +34,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
           <ul className="side-nav-second-level">
             {item.children.map((child, index) => (
               <li key={index}>
-                <a href={child.href}>{child.label}</a>
+                <Link to={child.href}>{child.label}</Link>
               </li>
             ))}
           </ul>
