@@ -137,11 +137,9 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
             <div className="col-12">
               <div className="page-title-box">
                 <div className="page-title-right">
-                  <Link to="session-create">
-                    <button className="btn btn-outline-primary mx-12">
-                      Nouveau
-                    </button>
-                  </Link>
+                  <button className="btn btn-outline-primary mx-12" data-bs-toggle="modal" data-bs-target="#danger-alert-modal">
+                    Nouveau
+                  </button>
                   <button className="btn btn-outline-primary mx-12">
                     Lister
                   </button>
@@ -242,6 +240,34 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
                             </button>
                           </div>
                         </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    id="danger-alert-modal"
+                    className="modal fade"
+                    tabIndex={-1}
+                    role="dialog"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-sm">
+                      <div className="modal-content modal-filled bg-danger">
+                        <div className="modal-body p-4">
+                          <div className="text-center">
+                            <i className="ri-close-circle-line h1"></i>
+                            <h4 className="mt-2">Oh desolé!</h4>
+                            <p className="mt-3">
+                             La création de session est actuellement désactivée
+                            </p>
+                            <button
+                              type="button"
+                              className="btn btn-light my-2"
+                              data-bs-dismiss="modal"
+                            >
+                              Continue
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
