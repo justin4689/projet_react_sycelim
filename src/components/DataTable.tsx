@@ -42,7 +42,7 @@ export default function DataTable<T extends Record<string, any>>({
   data,
   actions,
   actionHeader = "Actions",
-  tableClassName = "table table-bordered dt-responsive nowrap w-100 mb-0",
+  tableClassName = "table table-bordered dt-responsive w-100 mb-0",
   actionsSortField,
   serverSide = false,
   page,
@@ -119,7 +119,12 @@ export default function DataTable<T extends Record<string, any>>({
         header: c.lbl,
         cell: (info) => {
           const v = info.getValue();
-          return v == null ? "" : String(v);
+          const text = v == null ? "" : String(v);
+          return (
+            <span style={{ whiteSpace: "normal", overflowWrap: "anywhere" }}>
+              {text}
+            </span>
+          );
         },
       };
     });
@@ -243,11 +248,9 @@ export default function DataTable<T extends Record<string, any>>({
                           ? { width: "1%" }
                           : undefined
                       }
-                      className={
-                        header.column.id === "actions"
-                          ? "text-center"
-                          : undefined
-                      }
+                      className={`${
+                        header.column.id === "actions" ? "text-center" : ""
+                      } text-nowrap`}
                     >
                       {header.isPlaceholder ? null : (
                         <div
