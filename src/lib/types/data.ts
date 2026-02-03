@@ -1,4 +1,4 @@
- import type { FormConfig } from '../types/formConfig';
+ import type { FormConfig } from './formConfig';
 
  export const userConfig: FormConfig = {
   title: "Utilisateurs",

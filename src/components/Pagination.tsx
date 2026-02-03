@@ -55,7 +55,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav aria-label="Table pagination">
-      <ul className="pagination justify-content-end mb-0 mt-3">
+      <ul className="pagination justify-content-end mb-0 mt-2">
         {/* First page (double chevron left) */}
         <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button

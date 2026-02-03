@@ -1,15 +1,14 @@
 import { Outlet } from "react-router-dom";
-import Footer from "../components/Footer";
-import Sidebar from "../components/Sidebar";
-import TopBar from "../components/TopBar";
+import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
+import TopBar from "@/components/TopBar";
 
 export default function DashboardLayout() {
   return (
     <div className="wrapper">
       <Sidebar />
-       <TopBar />
+      <TopBar />
       <div className="content-page">
-       
         <div className="content">
           <Outlet />
         </div>

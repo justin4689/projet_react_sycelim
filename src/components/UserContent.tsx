@@ -1,136 +1,46 @@
 import { Link, useNavigate } from "react-router-dom";
-import type { FormConfig } from "../types/formConfig";
-import Pagination from "./Pagination";
-import { useMemo, useState } from "react";
-import {
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
-
-type User = {
-  user_id: number;
-  user_nom: string;
-  user_prenoms: string;
-  user_genre: string;
-  user_date: string;
-  user_login: string;
-  user_email: string;
-  user_mobile: string;
-  user_active: string;
-  user_creation: string;
-};
+import type { FormConfig } from "@/lib/types/formConfig";
+import DataTable from "./DataTable";
+import TableSkeleton from "./skeleton/TableSkeleton";
+import { useState } from "react";
+import { useUsersPaginated } from "@/hook/queries";
+import type { User } from "@/lib/types/user.types";
 
 export default function UserContent({ config }: { config: FormConfig }) {
   const navigate = useNavigate();
 
-  // Données du tableau (pour l'instant statiques)
-  const users: User[] = Array.from({ length: 200 }, (_, index) => {
-    const id = index + 1;
-    return {
-      user_id: id,
-      user_nom: `Nom ${id}`,
-      user_prenoms: `Prénom ${id}`,
-      user_genre: id % 2 === 0 ? "Masculin" : "Feminin",
-      user_date: `199${id % 10}-0${(id % 9) + 1}-15`,
-      user_login: `user${id}`,
-      user_email: `user${id}@example.com`,
-      user_mobile: `0700000${(id % 1000).toString().padStart(3, "0")}`,
-      user_active: id % 3 === 0 ? "Non" : "Oui",
-      user_creation: `2024-0${(id % 9) + 1}-01`,
-    };
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [q, setQ] = useState("");
+  const [sortBy, setSortBy] = useState("user_creation");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const { data, isLoading, error } = useUsersPaginated<User>({
+    page,
+    limit,
+    q: q.trim() ? q : undefined,
+    sortBy,
+    sortOrder,
   });
 
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
+  const users = data?.data ?? [];
+  const totalPages = data?.pagination?.totalPages ?? 1;
 
-  const filteredUsers = useMemo(() => {
-    if (!searchTerm.trim()) return users;
-    const lower = searchTerm.toLowerCase();
-    return users.filter((u) =>
-      [u.user_nom, u.user_prenoms, u.user_login, u.user_email, u.user_mobile]
-        .join(" ")
-        .toLowerCase()
-        .includes(lower)
-    );
-  }, [searchTerm, users]);
-
-  const totalPages = Math.ceil(filteredUsers.length / pageSize);
-
-  // Colonnes React Table basées sur la config
-  const columns = useMemo<ColumnDef<User>[]>(
-    () => [
-      ...config.list_case.table.map((field) => ({
-        accessorKey: field.nom as keyof User,
-        header: field.lbl,
-        cell: (info: any) => info.getValue(),
-      })),
-      {
-        id: "actions",
-        header: () => <span>Actions</span>,
-        cell: ({ row }: any) => {
-          const user = row.original as User;
-          return (
-            <div className="d-flex justify-content-center">
-              <button
-                onClick={() => handleView(user.user_id)}
-                className="action-icon view border-0 bg-transparent"
-                title="Voir"
-              >
-                <i className="mdi mdi-eye"></i>
-              </button>
-              <button
-                onClick={() => handleEdit(user.user_id)}
-                className="action-icon edit border-0 bg-transparent"
-                title="Modifier"
-              >
-                <i className="mdi mdi-square-edit-outline"></i>
-              </button>
-              <button
-                onClick={() => handleDelete(user.user_id)}
-                className="action-icon delete border-0 bg-transparent"
-                title="Supprimer"
-              >
-                <i className="mdi mdi-delete"></i>
-              </button>
-            </div>
-          );
-        },
-      },
-    ],
-    [config]
+  const columns = config.list_case.table.map((c) =>
+    c.nom === "user_id" ? { ...c, nom: "__rowNumber", lbl: "User ID" } : c,
   );
 
-  // Données paginées pour React Table
-  const paginatedUsers = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return filteredUsers.slice(startIndex, startIndex + pageSize);
-  }, [currentPage, pageSize, filteredUsers]);
-
-  const startIndex = (currentPage - 1) * pageSize;
-
-  const table = useReactTable({
-    data: paginatedUsers,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
-    pageCount: totalPages,
-  });
-
   // Fonction pour gérer les actions
-  const handleView = (id: number) => {
+  const handleView = (id: string) => {
     navigate(`/dashboard/user-details/${id}`);
   };
 
-  const handleEdit = (id: number) => {
+  const handleEdit = (id: string) => {
     console.log("Edit item:", id);
     // Implémenter la logique d'édition
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     console.log("Delete item:", id);
     // Implémenter la logique de suppression
   };
@@ -265,124 +175,56 @@ export default function UserContent({ config }: { config: FormConfig }) {
                     {config.list_case.subtitle}
                   </h4>
                   <hr />
-                  <div className="card-body pb-0 pt-1">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="d-flex align-items-center">
-                        <select
-                          className="form-select form-select-sm"
-                          style={{ width: "auto" }}
-                          value={pageSize}
-                          onChange={(e) => {
-                            setPageSize(Number(e.target.value));
-                            setCurrentPage(1);
-                          }}
-                        >
-                          <option value={10}>10</option>
-                          <option value={25}>25</option>
-                          <option value={50}>50</option>
-                          <option value={100}>100</option>
-                        </select>
-                        <span className="ms-2">éléments par page</span>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <span className="me-2">Recherche:</span>
-                        <input
-                          type="search"
-                          className="form-control form-control-sm"
-                          style={{ width: "200px" }}
-                          value={searchTerm}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setCurrentPage(1);
-                          }}
-                        />
-                      </div>
+                  {isLoading ? (
+                    <TableSkeleton columnsCount={columns.length} />
+                  ) : error ? (
+                    <div className="px-3 text-danger">
+                      Erreur lors du chargement des utilisateurs
                     </div>
-                    <table
+                  ) : (
+                    <DataTable<User>
                       id="basic-datatable"
-                      className="table table-bordered  dt-responsive nowrap w-100 mb-0"
-                    >
-                      <thead className="table-light">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                          <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                              <th
-                                key={header.id}
-                                style={
-                                  header.column.id === "actions"
-                                    ? { width: "1%" }
-                                    : undefined
-                                }
-                                className={
-                                  header.column.id === "actions"
-                                    ? "text-center"
-                                    : undefined
-                                }
-                              >
-                                {header.isPlaceholder
-                                  ? null
-                                  : header.column.columnDef.header instanceof
-                                    Function
-                                  ? header.column.columnDef.header(
-                                      header.getContext()
-                                    )
-                                  : header.column.columnDef.header}
-                              </th>
-                            ))}
-                          </tr>
-                        ))}
-                      </thead>
-                      <tbody>
-                        {table.getRowModel().rows.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan={table.getVisibleLeafColumns().length}
-                              className="text-start"
-                            >
-                              Aucun element trouvé
-                            </td>
-                          </tr>
-                        ) : (
-                          table.getRowModel().rows.map((row) => (
-                            <tr key={row.id}>
-                              {row.getVisibleCells().map((cell) => (
-                                <td
-                                  key={cell.id}
-                                  className={
-                                    cell.column.id === "actions"
-                                      ? "text-center"
-                                      : undefined
-                                  }
-                                >
-                                  {typeof cell.column.columnDef.cell ===
-                                  "function"
-                                    ? cell.column.columnDef.cell(
-                                        cell.getContext()
-                                      )
-                                    : (cell.getValue() as any)}
-                                </td>
-                              ))}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center mt-2">
-                      <div className="text-muted ">
-                        {filteredUsers.length === 0
-                          ? "Affichage de 0 à 0 sur 0 éléments"
-                          : `Affichage de ${startIndex + 1} à ${Math.min(
-                              startIndex + paginatedUsers.length,
-                              filteredUsers.length
-                            )} sur ${filteredUsers.length} éléments`}
-                      </div>
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={(page) => setCurrentPage(page)}
-                      />
-                    </div>
-                  </div>
+                      columns={columns}
+                      data={users}
+                      serverSide
+                      page={page}
+                      pageSize={limit}
+                      totalPages={totalPages}
+                      onPageChange={setPage}
+                      onPageSizeChange={setLimit}
+                      searchTerm={q}
+                      onSearchTermChange={setQ}
+                      onSortChange={(nextSortBy, nextSortOrder) => {
+                        setSortBy(nextSortBy);
+                        setSortOrder(nextSortOrder);
+                        setPage(1);
+                      }}
+                      actions={[
+                        {
+                          id: "view",
+                          title: "Voir",
+                          iconClass: "mdi mdi-eye",
+                          className: "action-icon view border-0 bg-transparent",
+                          onClick: (u) => handleView(u._id),
+                        },
+                        {
+                          id: "edit",
+                          title: "Modifier",
+                          iconClass: "mdi mdi-square-edit-outline",
+                          className: "action-icon edit border-0 bg-transparent",
+                          onClick: (u) => handleEdit(u._id),
+                        },
+                        {
+                          id: "delete",
+                          title: "Supprimer",
+                          iconClass: "mdi mdi-delete",
+                          className:
+                            "action-icon delete border-0 bg-transparent",
+                          onClick: (u) => handleDelete(u._id),
+                        },
+                      ]}
+                    />
+                  )}
                 </div>
               </div>
             </div>

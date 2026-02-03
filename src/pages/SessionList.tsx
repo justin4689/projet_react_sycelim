@@ -1,13 +1,10 @@
-import SessionContent from "../components/SessionContent";
-import  {sessionConfg}    from "../types/data";
-
+import SessionContent from "@/components/SessionContent";
+import { sessionConfg } from "@/lib/types/data";
 
 export default function SessionList() {
   return (
-
-    <div >
-        <SessionContent config={sessionConfg}/>
+    <div>
+      <SessionContent config={sessionConfg} />
     </div>
-  )
-
+  );
 }

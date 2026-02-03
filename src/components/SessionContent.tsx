@@ -1,14 +1,7 @@
-import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
-import {
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
-import Pagination from "./Pagination";
-import { sessionConfg } from "../types/data";
-import type { FormConfig } from "../types/formConfig";
+import { useNavigate } from "react-router-dom";
+import DataTable from "./DataTable";
+import { sessionConfg } from "@/lib/types/data";
+import type { FormConfig } from "@/lib/types/formConfig";
 
 type Session = {
   session_id: number;
@@ -20,6 +13,8 @@ type Session = {
 };
 
 function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
+  const navigate = useNavigate();
+
   const sessions: Session[] = Array.from({ length: 200 }, (_, index) => {
     const id = index + 1;
     const hour = (id % 24).toString().padStart(2, "0");
@@ -42,92 +37,13 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
     };
   });
 
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredSessions = useMemo(() => {
-    if (!searchTerm.trim()) return sessions;
-    const lower = searchTerm.toLowerCase();
-    return sessions.filter((s) =>
-      [
-        s.session_device,
-        s.session_location,
-        s.session_login_time,
-        s.session_last_activity,
-        s.session_status,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(lower),
-    );
-  }, [searchTerm, sessions]);
-
-  const totalPages = Math.ceil(filteredSessions.length / pageSize);
-
   const handleView = (session: Session) => {
-    console.log("view session", session);
+    navigate(`/dashboard/session-details/${session.session_id}`);
   };
 
   const handleTerminate = (session: Session) => {
     console.log("terminate session", session);
   };
-
-  // Colonnes React Table basées sur la config
-  const columns = useMemo<ColumnDef<Session>[]>(
-    () => [
-      ...config.list_case.table.map((field) => ({
-        accessorKey: field.nom as keyof Session,
-        header: field.lbl,
-        cell: (info: any) => info.getValue(),
-      })),
-      {
-        id: "actions",
-        header: () => <span>Actions</span>,
-        cell: ({ row }: any) => {
-          const session = row.original as Session;
-          return (
-            <div className="d-flex justify-content-center">
-              <Link to={`/dashboard/session-details/${session.session_id}`}>
-                <button
-                  onClick={() => handleView(session)}
-                  className="action-icon view border-0 bg-transparent"
-                  title="Afficher"
-                >
-                  <i className="mdi mdi-eye" />
-                </button>
-              </Link>
-              <button
-                onClick={() => handleTerminate(session)}
-                className="action-icon delete border-0 bg-transparent"
-                title="Terminer"
-              >
-                <i className="mdi mdi-delete" />
-              </button>
-            </div>
-          );
-        },
-      },
-    ],
-    [config],
-  );
-
-  // Données paginées pour React Table
-  const paginatedSessions = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return filteredSessions.slice(startIndex, startIndex + pageSize);
-  }, [currentPage, pageSize, filteredSessions]);
-
-  const startIndex = (currentPage - 1) * pageSize;
-
-  const table = useReactTable({
-    data: paginatedSessions,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
-    pageCount: totalPages,
-  });
 
   return (
     <div className="">
@@ -137,7 +53,11 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
             <div className="col-12">
               <div className="page-title-box">
                 <div className="page-title-right">
-                  <button className="btn btn-outline-primary mx-12" data-bs-toggle="modal" data-bs-target="#danger-alert-modal">
+                  <button
+                    className="btn btn-outline-primary mx-12"
+                    data-bs-toggle="modal"
+                    data-bs-target="#danger-alert-modal"
+                  >
                     Nouveau
                   </button>
                   <button className="btn btn-outline-primary mx-12">
@@ -257,7 +177,7 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
                             <i className="ri-close-circle-line h1"></i>
                             <h4 className="mt-2">Oh desolé!</h4>
                             <p className="mt-3">
-                             La création de session est actuellement désactivée
+                              La création de session est actuellement désactivée
                             </p>
                             <button
                               type="button"
@@ -281,126 +201,31 @@ function SessionContent({ config = sessionConfg }: { config?: FormConfig }) {
             <div className="col-12">
               <div className="card">
                 <div className="card-body py-3 px-0 overflow-hidden">
-                  <h4 className="header-title m-0 ps-3">Liste de sessions</h4>
+                  <h4 className="header-title m-0 ps-3">
+                    {config.list_case.subtitle}
+                  </h4>
                   <hr />
-                  <div className="card-body pb-0 pt-1">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="d-flex align-items-center">
-                        <select
-                          className="form-select form-select-sm"
-                          style={{ width: "auto" }}
-                          value={pageSize}
-                          onChange={(e) => {
-                            setPageSize(Number(e.target.value));
-                            setCurrentPage(1);
-                          }}
-                        >
-                          <option value={10}>10</option>
-                          <option value={25}>25</option>
-                          <option value={50}>50</option>
-                          <option value={100}>100</option>
-                        </select>
-                        <span className="ms-2">éléments par page</span>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <span className="me-2">Recherche:</span>
-                        <input
-                          type="search"
-                          className="form-control form-control-sm"
-                          style={{ width: "200px" }}
-                          value={searchTerm}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setCurrentPage(1);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <table
-                      id="basic-datatable"
-                      className="table table-bordered  dt-responsive nowrap w-100 mb-0"
-                    >
-                      <thead className="table-light">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                          <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                              <th
-                                key={header.id}
-                                style={
-                                  header.column.id === "actions"
-                                    ? { width: "1%" }
-                                    : undefined
-                                }
-                                className={
-                                  header.column.id === "actions"
-                                    ? "text-center"
-                                    : undefined
-                                }
-                              >
-                                {header.isPlaceholder
-                                  ? null
-                                  : header.column.columnDef.header instanceof
-                                      Function
-                                    ? header.column.columnDef.header(
-                                        header.getContext(),
-                                      )
-                                    : header.column.columnDef.header}
-                              </th>
-                            ))}
-                          </tr>
-                        ))}
-                      </thead>
-                      <tbody>
-                        {table.getRowModel().rows.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan={table.getVisibleLeafColumns().length}
-                              className="text-start"
-                            >
-                              Aucun element trouvé
-                            </td>
-                          </tr>
-                        ) : (
-                          table.getRowModel().rows.map((row) => (
-                            <tr key={row.id}>
-                              {row.getVisibleCells().map((cell) => (
-                                <td
-                                  key={cell.id}
-                                  className={
-                                    cell.column.id === "actions"
-                                      ? "text-center"
-                                      : undefined
-                                  }
-                                >
-                                  {typeof cell.column.columnDef.cell ===
-                                  "function"
-                                    ? cell.column.columnDef.cell(
-                                        cell.getContext(),
-                                      )
-                                    : (cell.getValue() as any)}
-                                </td>
-                              ))}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                    <div className="d-flex justify-content-between align-items-center mt-2">
-                      <div className="text-muted ">
-                        {filteredSessions.length === 0
-                          ? "Affichage de 0 à 0 sur 0 éléments"
-                          : `Affichage de ${startIndex + 1} à ${Math.min(
-                              startIndex + paginatedSessions.length,
-                              filteredSessions.length,
-                            )} sur ${filteredSessions.length} éléments`}
-                      </div>
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={(page) => setCurrentPage(page)}
-                      />
-                    </div>
-                  </div>
+                  <DataTable<Session>
+                    id="basic-datatable"
+                    columns={config.list_case.table}
+                    data={sessions}
+                    actions={[
+                      {
+                        id: "view",
+                        title: "Afficher",
+                        iconClass: "mdi mdi-eye",
+                        className: "action-icon view border-0 bg-transparent",
+                        onClick: (s) => handleView(s),
+                      },
+                      {
+                        id: "delete",
+                        title: "Terminer",
+                        iconClass: "mdi mdi-delete",
+                        className: "action-icon delete border-0 bg-transparent",
+                        onClick: (s) => handleTerminate(s),
+                      },
+                    ]}
+                  />
                 </div>
               </div>
             </div>
