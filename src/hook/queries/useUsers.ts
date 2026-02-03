@@ -14,10 +14,10 @@ export const useUsers = (filters = {}, options = {}) => {
 };
 
 // Query détail
-export const useUser = (userId: string | undefined, options = {}) => {
+export const useUser = <TUser = unknown>(userId: string | undefined, options = {}) => {
   return useQuery({
     queryKey: queryKeys.users.detail(userId),
-    queryFn: () => userService.getUserById(userId),
+    queryFn: () => userService.getUserById(userId) as Promise<TUser>,
     enabled: !!userId, // Ne s'exécute que si userId existe
     ...options, 
   });

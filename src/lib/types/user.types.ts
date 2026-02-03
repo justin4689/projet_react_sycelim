@@ -7,6 +7,6 @@ export type User = {
   user_login: string;
   user_email: string;
   user_mobile: string;
-  user_active: string;
+  user_active: boolean;
   user_creation: string;
 };
