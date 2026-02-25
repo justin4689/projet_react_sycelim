@@ -5,6 +5,7 @@ export interface MenuItemType {
   id: string;
   title: string;
   icon: string;
+  href?: string;
   children?: {
     label: string;
     href: string;
@@ -18,17 +19,24 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
   return (
     <li className="side-nav-item">
-      <a
-        data-bs-toggle="collapse"
-        href={`#${item.id}`}
-        aria-expanded="false"
-        aria-controls={item.id}
-        className="side-nav-link"
-      >
-        <i className={item.icon}></i>
-        <span>{item.title}</span>
-        {item.children && <span className="menu-arrow"></span>}
-      </a>
+      {item.children ? (
+        <a
+          data-bs-toggle="collapse"
+          href={`#${item.id}`}
+          aria-expanded="false"
+          aria-controls={item.id}
+          className="side-nav-link"
+        >
+          <i className={item.icon}></i>
+          <span>{item.title}</span>
+          <span className="menu-arrow"></span>
+        </a>
+      ) : (
+        <Link to={item.href ?? "#"} className="side-nav-link">
+          <i className={item.icon}></i>
+          <span>{item.title}</span>
+        </Link>
+      )}
       {item.children && (
         <div className="collapse" id={item.id}>
           <ul className="side-nav-second-level">

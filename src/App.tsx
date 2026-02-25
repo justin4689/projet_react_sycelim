@@ -11,6 +11,8 @@ import UserCreatePage from "./pages/UserCreatePage";
 import SessionContent from "./components/SessionContent";
 import UserDetailsPage from "./pages/UserDetailsPage";
 import SessionDetails from "./components/SessionDetails";
+import ConfigList from "./pages/ConfigList";
+import ConfigEntityDetailsPage from "./pages/ConfigEntityDetailsPage";
 
 function App() {
   return (
@@ -26,6 +28,12 @@ function App() {
             <Route index element={<UserList />} />
             <Route path="user-create" element={<UserCreatePage />} />
             <Route path="user-details/:id" element={<UserDetailsPage />} />
+
+            <Route path="configurations" element={<ConfigList />} />
+            <Route
+              path="configurations/:entity"
+              element={<ConfigEntityDetailsPage />}
+            />
             <Route path="sessions" element={<SessionContent />} />
             <Route path="session-details/:id" element={<SessionDetails />} />
           </Route>

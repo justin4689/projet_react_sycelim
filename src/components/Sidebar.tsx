@@ -5,6 +5,7 @@ interface MenuItem {
   id: string;
   title: string;
   icon: string;
+  href?: string;
   children?: {
     label: string;
     href: string;
@@ -26,7 +27,15 @@ export default function Sidebar() {
       icon: "uil-clock",
       children: [{ label: "Liste des sessions", href: "/dashboard/sessions" }],
     },
-  ];
+
+     {
+      id: "sidebarconfig",
+      title: "Configuration",
+      icon: "uil-cog",
+      href: "/dashboard/configurations",
+     
+    },
+  ];  
 
   return (
     <div className="leftside-menu">
