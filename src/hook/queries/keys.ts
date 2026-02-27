@@ -8,5 +8,9 @@ export const queryKeys = {
     detail: (id: string | undefined) => [...queryKeys.users.details(), id],
     infinite: (filters: Record<string, unknown> = {}) => [...queryKeys.users.all, 'infinite', filters],
   },
-
+  config: {
+    all: ['config'],
+    list: (filters: Record<string, unknown> = {}) => [...queryKeys.config.all, 'list', filters],
+    detail: (id: string | undefined) => [...queryKeys.config.all, 'detail', id],
+  },
 };

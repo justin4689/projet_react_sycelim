@@ -21,10 +21,12 @@ export const queryClient = new QueryClient({
         }
         return failureCount < 2;
       },
-      staleTime: 1 * 60 * 1000, // 1 minute par défaut
-      gcTime: 5 * 60 * 1000, // 5 minutes
+     
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
+        staleTime: 0,
+  refetchInterval: 5000,
+  refetchIntervalInBackground: true
     },
     mutations: {
       retry: false,

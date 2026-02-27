@@ -31,7 +31,7 @@ function App() {
 
             <Route path="configurations" element={<ConfigList />} />
             <Route
-              path="configurations/:entity"
+              path="configurations/:id"
               element={<ConfigEntityDetailsPage />}
             />
             <Route path="sessions" element={<SessionContent />} />

@@ -1,6 +1,16 @@
+import { useConfig } from "@/hook/queries/useConfig";
+import type { entityConfig, entityConfigData } from "@/lib/types/config.types";
 import { Link } from "react-router-dom";
 
 function ConfigContent() {
+  const { data, isLoading, error } = useConfig<
+    entityConfig[] | entityConfigData
+  >();
+
+  const entities: entityConfig[] = Array.isArray(data)
+    ? data
+    : (data?.data ?? []);
+
   return (
     <div className="">
       <div className="">
@@ -162,79 +172,52 @@ function ConfigContent() {
 
                   {/* <!-- Liste des entités --> */}
                   <div className="row g-3 px-3">
-                    <div className="col-12 col-md-6 col-xl-4">
-                      <Link
-                        to="/dashboard/configurations/users"
-                        className="text-decoration-none"
-                      >
-                        <div className="card h-100 shadow-sm border">
-                          <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-start">
-                              <div>
-                                <h4 className="mt-0 mb-1">Utilisateurs</h4>
-                                <div className="text-muted">Table : users</div>
-                              </div>
-                              <div className="text-primary">
-                                <i className="uil uil-users-alt" />
-                              </div>
-                            </div>
-                            <div className="mt-2 text-muted">
-                              2 colonnes formulaire
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-
-                    <div className="col-12 col-md-6 col-xl-4">
-                      <Link
-                        to="/dashboard/configurations/products"
-                        className="text-decoration-none"
-                      >
-                        <div className="card h-100 shadow-sm border">
-                          <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-start">
-                              <div>
-                                <h4 className="mt-0 mb-1">Produits</h4>
-                                <div className="text-muted">
-                                  Table : products
+                    {isLoading ? (
+                      <div className="col-12 px-3 text-muted">
+                        Chargement...
+                      </div>
+                    ) : error ? (
+                      <div className="col-12 px-3 text-danger">
+                        Erreur lors du chargement des configurations
+                      </div>
+                    ) : entities.length === 0 ? (
+                      <div className="col-12 px-3 text-muted">
+                        Aucune entité
+                      </div>
+                    ) : (
+                      entities.map((entity) => (
+                        <div
+                          key={entity.id}
+                          className="col-12 col-md-6 col-xl-4"
+                        >
+                          <Link
+                            to={`/dashboard/configurations/${entity.id}`}
+                            className="text-decoration-none"
+                          >
+                            <div className="card h-100 shadow-sm border">
+                              <div className="card-body">
+                                <div className="d-flex justify-content-between align-items-start">
+                                  <div>
+                                    <h4 className="mt-0 mb-1">
+                                      {entity.entity}
+                                    </h4>
+                                    <div className="text-muted">
+                                      Table : {entity.entity}
+                                    </div>
+                                  </div>
+                                  <div className="text-primary">
+                                    <i className="uil uil-users-alt" />
+                                  </div>
+                                </div>
+                                <div className="mt-2 text-muted">
+                                  {entity.formColumns} colonnes formulaire
                                 </div>
                               </div>
-                              <div className="text-primary">
-                                <i className="uil uil-box" />
-                              </div>
                             </div>
-                            <div className="mt-2 text-muted">
-                              3 colonnes formulaire
-                            </div>
-                          </div>
+                          </Link>
                         </div>
-                      </Link>
-                    </div>
-
-                    <div className="col-12 col-md-6 col-xl-4">
-                      <Link
-                        to="/dashboard/configurations/orders"
-                        className="text-decoration-none"
-                      >
-                        <div className="card h-100 shadow-sm border">
-                          <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-start">
-                              <div>
-                                <h4 className="mt-0 mb-1">Commandes</h4>
-                                <div className="text-muted">Table : orders</div>
-                              </div>
-                              <div className="text-primary">
-                                <i className="uil uil-shopping-cart" />
-                              </div>
-                            </div>
-                            <div className="mt-2 text-muted">
-                              2 colonnes formulaire
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>

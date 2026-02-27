@@ -1,14 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useConfigDetail } from "@/hook/queries/useConfig";
+import { queryKeys } from "@/hook/queries/keys";
+import type { ConfigDetailResponse } from "@/lib/types/config.types";
+import { configService } from "@/services";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
-const ENTITY_META: Record<
-  string,
-  { label: string; table: string; formColumns: number }
-> = {
-  users: { label: "Utilisateurs", table: "users", formColumns: 2 },
-  products: { label: "Produits", table: "products", formColumns: 3 },
-  orders: { label: "Commandes", table: "orders", formColumns: 2 },
-};
 
 type FieldItem = {
   name: string;
@@ -16,6 +12,7 @@ type FieldItem = {
   type: string;
   required: boolean;
   colSpan: number;
+  options?: { label: string; value: string }[];
 };
 
 type TableColumnItem = {
@@ -34,126 +31,89 @@ type EntityConfig = {
   };
 };
 
-const MOCK_CONFIGS: Record<string, EntityConfig> = {
-  users: {
-    form: {
-      columns: 2,
-      fields: [
-        {
-          name: "user_nom",
-          label: "Nom",
-          type: "string",
-          required: true,
-          colSpan: 1,
-        },
-        {
-          name: "user_email",
-          label: "Email",
-          type: "email",
-          required: true,
-          colSpan: 2,
-        },
-      ],
-    },
-    table: {
-      columns: [
-        { name: "user_nom", label: "Nom", sortable: true },
-        { name: "user_email", label: "Email", sortable: false },
-      ],
-    },
-  },
-  products: {
-    form: {
-      columns: 3,
-      fields: [
-        {
-          name: "title",
-          label: "Libellé",
-          type: "string",
-          required: true,
-          colSpan: 2,
-        },
-        {
-          name: "price",
-          label: "Prix",
-          type: "number",
-          required: true,
-          colSpan: 1,
-        },
-      ],
-    },
-    table: {
-      columns: [
-        { name: "title", label: "Libellé", sortable: true },
-        { name: "price", label: "Prix", sortable: true },
-      ],
-    },
-  },
-  orders: {
-    form: {
-      columns: 2,
-      fields: [
-        {
-          name: "date",
-          label: "Date",
-          type: "date",
-          required: true,
-          colSpan: 1,
-        },
-        {
-          name: "status",
-          label: "Statut",
-          type: "string",
-          required: true,
-          colSpan: 1,
-        },
-      ],
-    },
-    table: {
-      columns: [
-        { name: "date", label: "Date", sortable: true },
-        { name: "status", label: "Statut", sortable: false },
-      ],
-    },
-  },
-};
-
 export default function ConfigEntityDetailsPage() {
-  const { entity } = useParams();
-  const key = (entity ?? "").toLowerCase();
-  const meta = ENTITY_META[key];
+  const { id } = useParams();
+  const queryClient = useQueryClient();
+  const {
+    data: configData,
+    isLoading,
+    error,
+  } = useConfigDetail<ConfigDetailResponse>(id);
 
-  const initialConfig = useMemo<EntityConfig | undefined>(
-    () => MOCK_CONFIGS[key],
-    [key],
-  );
-
-  const [entityName, setEntityName] = useState(key);
-  const [tableName, setTableName] = useState(meta?.table ?? key);
-  const [config, setConfig] = useState<EntityConfig | undefined>(initialConfig);
+  const [entityName, setEntityName] = useState("");
+  const [tableName, setTableName] = useState("");
+  const [config, setConfig] = useState<EntityConfig | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<"form" | "table">("form");
 
   const [editingMeta, setEditingMeta] = useState<
     null | "entityName" | "tableName" | "formColumns"
   >(null);
-  const [draftEntityName, setDraftEntityName] = useState(key);
-  const [draftTableName, setDraftTableName] = useState(meta?.table ?? key);
+  const [draftEntityName, setDraftEntityName] = useState("");
+  const [draftTableName, setDraftTableName] = useState("");
 
   const [selectedFormIndex, setSelectedFormIndex] = useState<number>(0);
   const [selectedTableIndex, setSelectedTableIndex] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+
+  const { mutate: saveConfig, isPending: isSaving } = useMutation({
+    mutationFn: async () => {
+      if (!configData?._id) {
+        throw new Error("Config ID manquant");
+      }
+
+      if (!config) {
+        throw new Error("Config manquante");
+      }
+
+      return configService.updateConfig({
+        id: configData._id,
+        data: {
+          label: entityName,
+          entity: tableName,
+          config,
+        },
+      });
+    },
+    onMutate: () => {
+      setSaveError(null);
+      setSaveSuccess(null);
+    },
+    onSuccess: async () => {
+      setIsDirty(false);
+      setSaveSuccess("Enregistré");
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.config.detail(configData?._id),
+        }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.config.all }),
+      ]);
+    },
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : "Erreur inconnue";
+      setSaveError(message);
+    },
+  });
+
   useEffect(() => {
-    setEntityName(key);
-    setTableName(meta?.table ?? key);
-    setDraftEntityName(key);
-    setDraftTableName(meta?.table ?? key);
-    setConfig(initialConfig);
+    if (!configData) return;
+
+    const nextEntityName = configData.label ?? configData.entity;
+    const nextTableName = configData.entity;
+
+    setEntityName(nextEntityName);
+    setTableName(nextTableName);
+    setDraftEntityName(nextEntityName);
+    setDraftTableName(nextTableName);
+    setConfig(configData.config as unknown as EntityConfig);
     setActiveTab("form");
     setSelectedFormIndex(0);
     setSelectedTableIndex(0);
     setIsDirty(false);
-  }, [initialConfig, key, meta?.table]);
+  }, [configData]);
 
   const cancelMetaEdit = () => {
     setDraftEntityName(entityName);
@@ -292,16 +252,22 @@ export default function ConfigEntityDetailsPage() {
                   </Link>
                   <button
                     className="btn btn-primary mx-12"
-                    disabled={!meta || !isDirty}
+                    disabled={!configData || !isDirty || isSaving}
                     title={
-                      !meta ? "Entité inconnue" : "Sauvegarde API à brancher"
+                      !configData
+                        ? "Configuration introuvable"
+                        : isSaving
+                          ? "Enregistrement en cours"
+                          : "Enregistrer"
                     }
+                    onClick={() => saveConfig()}
+                    type="button"
                   >
-                    Enregistrer
+                    {isSaving ? "Enregistrement..." : "Enregistrer"}
                   </button>
                   <button
                     className="btn btn-outline-primary mx-12"
-                    disabled={!meta}
+                    disabled={!configData}
                     onClick={addFormField}
                     title="Ajouter un champ au formulaire"
                     type="button"
@@ -310,7 +276,7 @@ export default function ConfigEntityDetailsPage() {
                   </button>
                   <button
                     className="btn btn-outline-primary mx-12"
-                    disabled={!meta}
+                    disabled={!configData}
                     onClick={addTableColumn}
                     title="Ajouter une colonne au tableau"
                     type="button"
@@ -327,15 +293,46 @@ export default function ConfigEntityDetailsPage() {
             <div className="col-12">
               <div className="card">
                 <div className="card-body py-3 px-0 overflow-hidden">
-                  <h4 className="header-title m-0 ps-3">Détails entité</h4>
+
+                  <div className="d-flex justify-content-between align-items-center">
+                                      <h4 className="header-title m-0 ps-3">Détails entité</h4>
+
+                    {isDirty && (
+                                <div className="pe-3">
+                                  <span className="badge bg-warning text-dark ">
+                                    Modifications non enregistrées
+                                  </span>
+                                </div>
+                              )}
+                  </div>
                   <hr />
 
-                  {!meta || !config ? (
+                  {isLoading ? (
+                    <div className="px-3 text-muted">Chargement...</div>
+                  ) : error ? (
                     <div className="px-3 text-danger">
-                      Entité inconnue: {entity}
+                      Erreur lors du chargement de la configuration
+                    </div>
+                  ) : !configData || !config ? (
+                    <div className="px-3 text-danger">
+                      Configuration introuvable: {id}
                     </div>
                   ) : (
                     <div className="row gy-3 gx-3 px-3">
+                      {saveError && (
+                        <div className="col-12">
+                          <div className="alert alert-danger mb-0">
+                            {saveError}
+                          </div>
+                        </div>
+                      )}
+                      {saveSuccess && (
+                        <div className="col-12">
+                          <div className="alert alert-success mb-0">
+                            {saveSuccess}
+                          </div>
+                        </div>
+                      )}
                       <div className="col-12 col-md-4">
                         <div className="card my-0 shadow-none border">
                           <div className="card-body">
@@ -445,6 +442,8 @@ export default function ConfigEntityDetailsPage() {
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
                               </select>
                             ) : (
                               <div
@@ -466,7 +465,7 @@ export default function ConfigEntityDetailsPage() {
                     </div>
                   )}
 
-                  {meta && config && (
+                  {configData && config && (
                     <>
                       <hr />
 
@@ -632,13 +631,7 @@ export default function ConfigEntityDetailsPage() {
                                     })}
                               </div>
 
-                              {isDirty && (
-                                <div className="mt-3">
-                                  <span className="badge bg-warning text-dark">
-                                    Modifications non enregistrées
-                                  </span>
-                                </div>
-                              )}
+                              
                             </div>
                           </div>
                         </div>
