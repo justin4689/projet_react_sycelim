@@ -1,6 +1,10 @@
 import { useConfigDetail } from "@/hook/queries/useConfig";
 import { queryKeys } from "@/hook/queries/keys";
-import type { ConfigDetailResponse } from "@/lib/types/config.types";
+import type {
+  ConfigDetailResponse,
+  ConfigFieldOption,
+  FieldType,
+} from "@/lib/types/config.types";
 import { configService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -9,10 +13,10 @@ import { Link, useParams } from "react-router-dom";
 type FieldItem = {
   name: string;
   label: string;
-  type: string;
+  type: FieldType;
   required: boolean;
   colSpan: number;
-  options?: { label: string; value: string }[];
+  options?: ConfigFieldOption[];
 };
 
 type TableColumnItem = {
@@ -143,6 +147,35 @@ export default function ConfigEntityDetailsPage() {
   const selectedFormField = formFields[selectedFormIndex];
   const selectedTableColumn = tableColumns[selectedTableIndex];
 
+  const normalizeFieldForType = (field: FieldItem, nextType: FieldType) => {
+    if (nextType === "select") {
+      const nextOptions: ConfigFieldOption[] =
+        field.options && field.options.length > 0
+          ? field.options
+          : [{ label: "Option 1", value: "option_1" }];
+
+      return {
+        ...field,
+        type: nextType,
+        options: nextOptions,
+      };
+    }
+
+    if (nextType === "checkbox") {
+      return {
+        ...field,
+        type: nextType,
+        options: undefined,
+      };
+    }
+
+    return {
+      ...field,
+      type: nextType,
+      options: undefined,
+    };
+  };
+
   const updateConfig = (patch: Partial<EntityConfig>) => {
     setConfig((prev) => {
       if (!prev) return prev;
@@ -159,6 +192,72 @@ export default function ConfigEntityDetailsPage() {
       if (!current) return prev;
       next[selectedFormIndex] = { ...current, ...patch };
       return { ...prev, form: { ...prev.form, fields: next } };
+    });
+    setIsDirty(true);
+  };
+
+  const setFormFieldType = (nextType: FieldType) => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const next = [...prev.form.fields];
+      const current = next[selectedFormIndex];
+      if (!current) return prev;
+      next[selectedFormIndex] = normalizeFieldForType(current, nextType);
+      return { ...prev, form: { ...prev.form, fields: next } };
+    });
+    setIsDirty(true);
+  };
+
+  const updateOptionAt = (
+    optionIndex: number,
+    patch: Partial<ConfigFieldOption>,
+  ) => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const nextFields = [...prev.form.fields];
+      const current = nextFields[selectedFormIndex];
+      if (!current) return prev;
+      const currentOptions = current.options ?? [];
+      const nextOptions = [...currentOptions];
+      const opt = nextOptions[optionIndex];
+      if (!opt) return prev;
+      nextOptions[optionIndex] = { ...opt, ...patch };
+      nextFields[selectedFormIndex] = { ...current, options: nextOptions };
+      return { ...prev, form: { ...prev.form, fields: nextFields } };
+    });
+    setIsDirty(true);
+  };
+
+  const addOption = () => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const nextFields = [...prev.form.fields];
+      const current = nextFields[selectedFormIndex];
+      if (!current) return prev;
+      const currentOptions = current.options ?? [];
+      const nextIndex = currentOptions.length + 1;
+      const nextOptions = [
+        ...currentOptions,
+        { label: `Option ${nextIndex}`, value: `option_${nextIndex}` },
+      ];
+      nextFields[selectedFormIndex] = { ...current, options: nextOptions };
+      return { ...prev, form: { ...prev.form, fields: nextFields } };
+    });
+    setIsDirty(true);
+  };
+
+  const deleteOptionAt = (optionIndex: number) => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const nextFields = [...prev.form.fields];
+      const current = nextFields[selectedFormIndex];
+      if (!current) return prev;
+      const currentOptions = current.options ?? [];
+      const nextOptions = currentOptions.filter(
+        (_, idx) => idx !== optionIndex,
+      );
+      nextFields[selectedFormIndex] = { ...current, options: nextOptions };
+      return { ...prev, form: { ...prev.form, fields: nextFields } };
     });
     setIsDirty(true);
   };
@@ -183,7 +282,7 @@ export default function ConfigEntityDetailsPage() {
         {
           name: "new_field",
           label: "Nouveau champ",
-          type: "string",
+          type: "text" as FieldType,
           required: false,
           colSpan: 1,
         },
@@ -265,24 +364,8 @@ export default function ConfigEntityDetailsPage() {
                   >
                     {isSaving ? "Enregistrement..." : "Enregistrer"}
                   </button>
-                  <button
-                    className="btn btn-outline-primary mx-12"
-                    disabled={!configData}
-                    onClick={addFormField}
-                    title="Ajouter un champ au formulaire"
-                    type="button"
-                  >
-                    + Champ
-                  </button>
-                  <button
-                    className="btn btn-outline-primary mx-12"
-                    disabled={!configData}
-                    onClick={addTableColumn}
-                    title="Ajouter une colonne au tableau"
-                    type="button"
-                  >
-                    + Colonne
-                  </button>
+               
+                 
                 </div>
                 <h4 className="page-title">Configuration</h4>
               </div>
@@ -293,17 +376,16 @@ export default function ConfigEntityDetailsPage() {
             <div className="col-12">
               <div className="card">
                 <div className="card-body py-3 px-0 overflow-hidden">
-
                   <div className="d-flex justify-content-between align-items-center">
-                                      <h4 className="header-title m-0 ps-3">Détails entité</h4>
+                    <h4 className="header-title m-0 ps-3">Détails entité</h4>
 
                     {isDirty && (
-                                <div className="pe-3">
-                                  <span className="badge bg-warning text-dark ">
-                                    Modifications non enregistrées
-                                  </span>
-                                </div>
-                              )}
+                      <div className="pe-3">
+                        <span className="badge bg-warning text-dark ">
+                          Modifications non enregistrées
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <hr />
 
@@ -630,8 +712,6 @@ export default function ConfigEntityDetailsPage() {
                                       );
                                     })}
                               </div>
-
-                              
                             </div>
                           </div>
                         </div>
@@ -703,12 +783,12 @@ export default function ConfigEntityDetailsPage() {
                                         className="form-select"
                                         value={selectedFormField.type}
                                         onChange={(e) =>
-                                          updateFormField({
-                                            type: e.target.value,
-                                          })
+                                          setFormFieldType(
+                                            e.target.value as FieldType,
+                                          )
                                         }
                                       >
-                                        <option value="string">string</option>
+                                        <option value="text">text</option>
                                         <option value="email">email</option>
                                         <option value="number">number</option>
                                         <option value="date">date</option>
@@ -716,8 +796,90 @@ export default function ConfigEntityDetailsPage() {
                                           password
                                         </option>
                                         <option value="file">file</option>
+                                        <option value="textarea">
+                                          textarea
+                                        </option>
+                                        <option value="select">select</option>
+                                        <option value="checkbox">
+                                          checkbox
+                                        </option>
                                       </select>
                                     </div>
+
+                                    {selectedFormField.type === "select" && (
+                                      <div className="col-12">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                          <label className="form-label m-0">
+                                            Options
+                                          </label>
+                                          <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={addOption}
+                                          >
+                                            + Ajouter une option
+                                          </button>
+                                        </div>
+
+                                        <div className="mt-2 d-grid gap-2">
+                                          {(
+                                            selectedFormField.options ?? []
+                                          ).map((opt, optIdx) => (
+                                            <div
+                                              key={`${opt.value}-${optIdx}`}
+                                              className="row g-2 align-items-end"
+                                            >
+                                              <div className="col-12 col-md-5">
+                                                <label className="form-label">
+                                                  Label
+                                                </label>
+                                                <input
+                                                  className="form-control"
+                                                  value={opt.label}
+                                                  onChange={(e) =>
+                                                    updateOptionAt(optIdx, {
+                                                      label: e.target.value,
+                                                    })
+                                                  }
+                                                />
+                                              </div>
+                                              <div className="col-12 col-md-5">
+                                                <label className="form-label">
+                                                  Value
+                                                </label>
+                                                <input
+                                                  className="form-control"
+                                                  value={opt.value}
+                                                  onChange={(e) =>
+                                                    updateOptionAt(optIdx, {
+                                                      value: e.target.value,
+                                                    })
+                                                  }
+                                                />
+                                              </div>
+                                              <div className="col-12 col-md-2 d-grid">
+                                                <button
+                                                  type="button"
+                                                  className="btn btn-outline-danger"
+                                                  onClick={() =>
+                                                    deleteOptionAt(optIdx)
+                                                  }
+                                                >
+                                                  Supprimer
+                                                </button>
+                                              </div>
+                                            </div>
+                                          ))}
+
+                                          {(selectedFormField.options ?? [])
+                                            .length === 0 && (
+                                            <div className="text-muted">
+                                              Aucune option. Ajoute-en une.
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
 
                                     <div className="col-12 col-md-3">
                                       <label className="form-label">

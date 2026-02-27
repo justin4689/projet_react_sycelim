@@ -14,14 +14,49 @@ export interface ConfigFieldOption {
   value: string;
 }
 
-export interface ConfigFormField {
+export type FieldType =
+  | "text"
+  | "string"
+  | "email"
+  | "number"
+  | "date"
+  | "password"
+  | "file"
+  | "select"
+  | "checkbox"
+  | "textarea";
+
+export interface BaseConfigFormField {
   name: string;
   label: string;
-  type: string;
+  type: FieldType;
   required: boolean;
   colSpan: number;
-  options?: ConfigFieldOption[];
 }
+
+export interface SelectConfigFormField extends BaseConfigFormField {
+  type: "select";
+  options: ConfigFieldOption[];
+}
+
+export interface CheckboxConfigFormField extends BaseConfigFormField {
+  type: "checkbox";
+}
+
+export type ConfigFormField =
+  | (BaseConfigFormField & {
+      type:
+        | "text"
+        | "string"
+        | "email"
+        | "number"
+        | "date"
+        | "password"
+        | "file"
+        | "textarea";
+    })
+  | SelectConfigFormField
+  | CheckboxConfigFormField;
 
 export interface ConfigTableColumn {
   name: string;
