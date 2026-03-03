@@ -1,8 +1,8 @@
 import DynamicContent from "@/components/DynamicContent";
-import DynamicForm from "@/components/DynamicForm";
 import { sessionConfg, userConfig } from "@/lib/types/data";
 import type { FormConfig } from "@/lib/types/formConfig";
 import { useLocation, useParams } from "react-router-dom";
+import { useConfigByName } from "@/hook/queries/useConfig";
 
 const CONFIG_BY_ENTITY: Record<string, FormConfig> = {
   users: userConfig,
@@ -10,7 +10,21 @@ const CONFIG_BY_ENTITY: Record<string, FormConfig> = {
 };
 
 export function DynamicPage() {
-  const { entity, id } = useParams();
+  const { entity } = useParams();
+
+  const {
+    data: configData,
+    isLoading,
+    error,
+  } = useConfigByName<any>(entity);
+
+   console.log(configData);
+
+
+
+
+  
+
   const location = useLocation();
   const isCreate = location.pathname.endsWith("/create");
 
@@ -27,8 +41,6 @@ export function DynamicPage() {
       </div>
     );
   }
-
-  
 
   return <DynamicContent entity={entity} config={config} />;
 }

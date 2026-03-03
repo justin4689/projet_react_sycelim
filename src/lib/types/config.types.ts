@@ -72,6 +72,9 @@ export interface EntityConfigDetails {
   table: {
     columns: ConfigTableColumn[];
   };
+  buttons: {
+    label: { label: string }[];
+  };
 }
 
 export interface ConfigDetailResponse {

@@ -21,3 +21,13 @@ export const useConfigDetail = <TConfig = unknown>(configId: string | undefined,
     ...options, 
   });
 };
+
+// Query détail
+export const useConfigByName = <TConfig = unknown>(configName: string | undefined, options = {}) => {
+  return useQuery({
+    queryKey: queryKeys.config.detail(configName),
+    queryFn: () => configService.getConfigByName(configName) as Promise<TConfig>,
+    enabled: !!configName, // Ne s'exécute que si configName existe
+    ...options, 
+  });
+};

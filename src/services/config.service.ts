@@ -12,6 +12,14 @@ export const configService = {
     return httpClient.get(`${endpoints.config}/${id}`);
   },
 
+
+    getConfigByName: async (name: string | undefined) => {
+    if (!name) throw new Error('Config name is required');
+    return httpClient.get(`${endpoints.config}/name/${name}`);
+  },
+
+
+
   
   updateConfig: async ({ id, data }: { id: string; data: unknown }) => {
     return httpClient.put(`${endpoints.config}/${id}`, data);

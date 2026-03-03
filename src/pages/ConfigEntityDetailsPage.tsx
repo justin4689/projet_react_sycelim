@@ -25,6 +25,10 @@ type TableColumnItem = {
   sortable: boolean;
 };
 
+type ButtonItem = {
+  label: string;
+};
+
 type EntityConfig = {
   form: {
     columns: number;
@@ -33,6 +37,25 @@ type EntityConfig = {
   table: {
     columns: TableColumnItem[];
   };
+  buttons?: ButtonItem[];
+};
+
+const normalizeButtons = (value: unknown): ButtonItem[] => {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (b): b is ButtonItem =>
+        typeof b === "object" && b !== null && "label" in b,
+    );
+  }
+
+  if (typeof value === "object" && value !== null && "label" in value) {
+    const label = (value as { label?: unknown }).label;
+    if (typeof label === "string") {
+      return [{ label }];
+    }
+  }
+
+  return [];
 };
 
 export default function ConfigEntityDetailsPage() {
@@ -143,6 +166,7 @@ export default function ConfigEntityDetailsPage() {
 
   const formFields = config?.form.fields ?? [];
   const tableColumns = config?.table.columns ?? [];
+  const buttons = normalizeButtons(config?.buttons);
 
   const selectedFormField = formFields[selectedFormIndex];
   const selectedTableColumn = tableColumns[selectedTableIndex];
@@ -180,6 +204,39 @@ export default function ConfigEntityDetailsPage() {
     setConfig((prev) => {
       if (!prev) return prev;
       return { ...prev, ...patch };
+    });
+    setIsDirty(true);
+  };
+
+  const addButton = () => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const currentButtons = normalizeButtons(prev.buttons);
+      const nextButtons = [...currentButtons, { label: "Nouveau bouton" }];
+      return { ...prev, buttons: nextButtons };
+    });
+    setIsDirty(true);
+  };
+
+  const updateButtonAt = (index: number, patch: Partial<ButtonItem>) => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const current = normalizeButtons(prev.buttons);
+      const target = current[index];
+      if (!target) return prev;
+      const nextButtons = [...current];
+      nextButtons[index] = { ...target, ...patch };
+      return { ...prev, buttons: nextButtons };
+    });
+    setIsDirty(true);
+  };
+
+  const deleteButtonAt = (index: number) => {
+    setConfig((prev) => {
+      if (!prev) return prev;
+      const current = normalizeButtons(prev.buttons);
+      const nextButtons = current.filter((_, idx) => idx !== index);
+      return { ...prev, buttons: nextButtons };
     });
     setIsDirty(true);
   };
@@ -364,8 +421,6 @@ export default function ConfigEntityDetailsPage() {
                   >
                     {isSaving ? "Enregistrement..." : "Enregistrer"}
                   </button>
-               
-                 
                 </div>
                 <h4 className="page-title">Configuration</h4>
               </div>
@@ -415,7 +470,7 @@ export default function ConfigEntityDetailsPage() {
                           </div>
                         </div>
                       )}
-                      <div className="col-12 col-md-4">
+                      <div className="col-12 col-md-6">
                         <div className="card my-0 shadow-none border">
                           <div className="card-body">
                             <div className="text-muted">Nom entité</div>
@@ -455,7 +510,7 @@ export default function ConfigEntityDetailsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 col-md-4">
+                      <div className="col-12 col-md-6">
                         <div className="card my-0 shadow-none border">
                           <div className="card-body">
                             <div className="text-muted">Table</div>
@@ -495,7 +550,7 @@ export default function ConfigEntityDetailsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 col-md-4">
+                      <div className="col-12 col-md-6">
                         <div className="card my-0 shadow-none border">
                           <div className="card-body">
                             <div className="text-muted">
@@ -541,6 +596,55 @@ export default function ConfigEntityDetailsPage() {
                                 {config.form.columns} colonne(s)
                               </div>
                             )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <div className="card my-0 shadow-none border">
+                          <div className="card-body">
+                            <div className="text-muted">Boutons</div>
+                            <div className="d-flex justify-content-between align-items-center mt-1">
+                              <div className="text-muted">
+                                {buttons.length} bouton(s)
+                              </div>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-primary"
+                                onClick={addButton}
+                              >
+                                + Ajouter
+                              </button>
+                            </div>
+
+                            <div className="mt-2 d-grid gap-2">
+                              {buttons.length === 0 ? (
+                                <div className="text-muted">Aucun bouton.</div>
+                              ) : (
+                                buttons.map((b, idx) => (
+                                  <div
+                                    key={`${b.label}-${idx}`}
+                                    className="d-flex gap-2"
+                                  >
+                                    <input
+                                      className="form-control"
+                                      value={b.label}
+                                      onChange={(e) =>
+                                        updateButtonAt(idx, {
+                                          label: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <button
+                                      type="button"
+                                      className="btn btn-outline-danger"
+                                      onClick={() => deleteButtonAt(idx)}
+                                    >
+                                      Supprimer
+                                    </button>
+                                  </div>
+                                ))
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
