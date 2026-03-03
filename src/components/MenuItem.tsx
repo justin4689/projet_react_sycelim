@@ -5,7 +5,9 @@ export interface MenuItemType {
   id: string;
   title: string;
   icon: string;
+  name?: string;
   href?: string;
+  type?: string;
   children?: {
     label: string;
     href: string;
@@ -17,6 +19,10 @@ interface MenuItemProps {
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
+  const resolvedHref =
+    item.href ??
+    (item.type === "dynamic" && item.name ? `/dashboard/${item.name}` : "#");
+
   return (
     <li className="side-nav-item">
       {item.children ? (
@@ -32,7 +38,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
           <span className="menu-arrow"></span>
         </a>
       ) : (
-        <Link to={item.href ?? "#"} className="side-nav-link">
+        <Link to={resolvedHref} className="side-nav-link">
           <i className={item.icon}></i>
           <span>{item.title}</span>
         </Link>

@@ -73,7 +73,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   return (
-    <div className="content-page">
+    <div className="">
       <div className="content">
         <div className="container-fluid">
           <div className="row">
