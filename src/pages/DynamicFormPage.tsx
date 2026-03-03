@@ -2,7 +2,7 @@ import DynamicForm from "../components/DynamicForm";
 
 import { userConfig } from "../lib/types/data";
  
- function DynamicFormPage ({config, onSubmit, initialData}: any) {
+ function DynamicFormPage ({ onSubmit, initialData}: any) {
 
 
     return (

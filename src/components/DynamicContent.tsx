@@ -1,17 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
-import type { FormConfig } from "@/lib/types/formConfig";
 import DataTable from "./DataTable";
 import TableSkeleton from "./skeleton/TableSkeleton";
 import { useState } from "react";
 import { useUsersPaginated } from "@/hook/queries";
 import type { User } from "@/lib/types/user.types";
+import type { ConfigDetailResponse } from "@/lib/types/config.types";
+import type { ListField } from "@/lib/types/formConfig";
+
+type ButtonItem = { label: string };
+
+const normalizeButtons = (value: unknown): ButtonItem[] => {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (b): b is ButtonItem =>
+        typeof b === "object" && b !== null && "label" in b,
+    );
+  }
+
+  if (typeof value === "object" && value !== null && "label" in value) {
+    const nested = (value as { label?: unknown }).label;
+    if (Array.isArray(nested)) {
+      return nested.filter(
+        (b): b is ButtonItem =>
+          typeof b === "object" && b !== null && "label" in b,
+      );
+    }
+  }
+
+  return [];
+};
 
 export default function DynamicContent({
   entity,
-  config,
+  configData,
 }: {
   entity: string;
-  config: FormConfig;
+  configData: ConfigDetailResponse;
 }) {
   const navigate = useNavigate();
 
@@ -36,9 +60,18 @@ export default function DynamicContent({
   const users = data?.data ?? [];
   const totalPages = data?.pagination?.totalPages ?? 1;
 
-  const columns = config.list_case.table.map((c) =>
-    c.nom === "user_id" ? { ...c, nom: "__rowNumber", lbl: "User ID" } : c,
-  );
+  const rawColumns = configData?.config?.table?.columns ?? [];
+  const columns: ListField[] = rawColumns.map((c) => {
+    const nom = c.name === "user_id" ? "__rowNumber" : c.name;
+    return {
+      nom,
+      lbl: c.label,
+      pos: "left",
+      sortable: c.sortable,
+    } as ListField;
+  });
+
+  const buttons = normalizeButtons(configData?.config?.buttons);
 
   // Fonction pour gérer les actions
   const handleView = (id: string) => {
@@ -65,18 +98,18 @@ export default function DynamicContent({
                 <div className="page-title-right">
                   <Link to={`/dashboard/${entity}/create`}>
                     <button className="btn btn-outline-primary mx-12">
-                      {config.boutons[0].labl}
+                      {buttons?.[0]?.label}
                     </button>
                   </Link>
                   <button className="btn btn-outline-primary mx-12">
-                    {config.boutons[1].labl}
+                    {buttons?.[1]?.label}
                   </button>
                   <button
                     className="btn btn-outline-primary mx-12"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
                   >
-                    {config.boutons[2].labl}
+                    {buttons?.[2]?.label}
                   </button>
                   <div
                     className="modal fade"
@@ -172,7 +205,9 @@ export default function DynamicContent({
                     </div>
                   </div>
                 </div>
-                <h4 className="page-title">{config.title}</h4>
+                <h4 className="page-title">
+                  {configData?.label ?? configData?.entity ?? ""}
+                </h4>
               </div>
             </div>
           </div>
@@ -181,9 +216,7 @@ export default function DynamicContent({
             <div className="col-12">
               <div className="card">
                 <div className="card-body py-3 px-0 overflow-hidden">
-                  <h4 className="header-title m-0 ps-3">
-                    {config.list_case.subtitle}
-                  </h4>
+                  <h4 className="header-title m-0 ps-3">{"Liste"}</h4>
                   <hr />
                   {isLoading ? (
                     <TableSkeleton columnsCount={columns.length} />

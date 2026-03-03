@@ -114,9 +114,12 @@ export default function DataTable<T extends Record<string, any>>({
         };
       }
 
+      const enableSorting = (c as any).sortable === false ? false : true;
+
       return {
         accessorKey: c.nom,
         header: c.lbl,
+        enableSorting,
         cell: (info) => {
           const v = info.getValue();
           const text = v == null ? "" : String(v);
