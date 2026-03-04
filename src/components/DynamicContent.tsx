@@ -101,10 +101,13 @@ export default function DynamicContent({
                       {buttons?.[0]?.label}
                     </button>
                   </Link>
-                  <button className="btn btn-outline-primary mx-12">
-                    {buttons?.[1]?.label}
-                  </button>
+                  <Link to={`/dashboard/${entity}`}>
+                    <button className="btn btn-outline-primary mx-12">
+                      {buttons?.[1]?.label}
+                    </button>
+                  </Link>
                   <button
+                    type="button"
                     className="btn btn-outline-primary mx-12"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
@@ -216,7 +219,9 @@ export default function DynamicContent({
             <div className="col-12">
               <div className="card">
                 <div className="card-body py-3 px-0 overflow-hidden">
-                  <h4 className="header-title m-0 ps-3">{"Liste"}</h4>
+                  <h4 className="header-title m-0 ps-3">
+                    {"Liste des " + configData?.label}{" "}
+                  </h4>
                   <hr />
                   {isLoading ? (
                     <TableSkeleton columnsCount={columns.length} />

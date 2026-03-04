@@ -6,7 +6,6 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardLayout from "./layouts/DashboardLayout";
-import UserList from "./pages/UserList";
 import SessionContent from "./components/SessionContent";
 import SessionDetails from "./components/SessionDetails";
 import ConfigList from "./pages/ConfigList";
@@ -14,7 +13,8 @@ import ConfigEntityDetailsPage from "./pages/ConfigEntityDetailsPage";
 import { DynamicPage } from "./pages/DynamicPage";
 
 import DynamicFormPage from "./pages/DynamicFormPage";
-import UserDetailsPage from "./pages/UserDetailsPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import DynamicDetailsPage from "./pages/DynamicDetailsPage";
 
 function App() {
   return (
@@ -27,9 +27,9 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<UserList />} />
+            <Route index element={<DashboardPage />} />
             {/* <Route path="user-create" element={<UserCreatePage />} /> */}
-            {/* <Route path="users/:id" element={<UserDetailsPage />} /> */}
+            {/* <Route path="users/:id" element={<UserDetailsPage />} />  */}
 
             <Route path="configurations" element={<ConfigList />} />
             <Route
@@ -43,7 +43,7 @@ function App() {
 
             <Route path=":entity" element={<DynamicPage />} />
             <Route path=":entity/create" element={<DynamicFormPage />} />
-            <Route path=":entity/:id" element={<DynamicPage />} />
+            <Route path=":entity/:id" element={   <DynamicDetailsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

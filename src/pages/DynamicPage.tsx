@@ -7,7 +7,6 @@ export function DynamicPage() {
 
   const { data: configData, isLoading, error } = useConfigByName<any>(entity);
 
-  console.log(configData);
 
   const location = useLocation();
   const isCreate = location.pathname.endsWith("/create");

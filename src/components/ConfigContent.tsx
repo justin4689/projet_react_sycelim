@@ -24,18 +24,9 @@ function ConfigContent() {
                     data-bs-toggle="modal"
                     data-bs-target="#danger-alert-modal"
                   >
-                    Nouveau
+                    Créer
                   </button>
-                  <button className="btn btn-outline-primary mx-12">
-                    Lister
-                  </button>
-                  <button
-                    className="btn btn-outline-primary mx-12"
-                    data-bs-toggle="modal"
-                    data-bs-target="#staticBackdrop"
-                  >
-                    Rechercher
-                  </button>
+                
                   <div
                     className="modal fade"
                     id="staticBackdrop"
@@ -143,7 +134,7 @@ function ConfigContent() {
                             <i className="ri-close-circle-line h1"></i>
                             <h4 className="mt-2">Oh desolé!</h4>
                             <p className="mt-3">
-                              La création de session est actuellement désactivée
+                              La création d'entité est actuellement désactivée
                             </p>
                             <button
                               type="button"

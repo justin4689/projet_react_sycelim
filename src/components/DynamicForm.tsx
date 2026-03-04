@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import type { FormConfig } from "@/lib/types/formConfig";
-import FormField from "./form/FormField";
 import { Link, useParams } from "react-router-dom";
 import { useConfigByName } from "@/hook/queries/useConfig";
 import type {
@@ -9,6 +8,25 @@ import type {
 } from "@/lib/types/config.types";
 
 type ButtonItem = { label: string };
+
+const EMPTY_OBJ: Record<string, any> = {};
+
+const shallowEqualRecord = (
+  a: Record<string, any>,
+  b: Record<string, any>,
+): boolean => {
+  if (a === b) return true;
+
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+
+  for (const k of aKeys) {
+    if (a[k] !== b[k]) return false;
+  }
+
+  return true;
+};
 
 const normalizeButtons = (value: unknown): ButtonItem[] => {
   if (Array.isArray(value)) {
@@ -39,13 +57,14 @@ interface DynamicFormProps {
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
-  config,
   configData: configDataProp,
   onSubmit,
-  initialData = {},
+  initialData,
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [columns, setColumns] = useState<number>(3);
+
+  const initialDataSafe = initialData ?? EMPTY_OBJ;
 
   const { entity } = useParams();
   const {
@@ -65,7 +84,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     if (hasApiConfig && configData) {
       (configData.config.form.fields ?? []).forEach((field) => {
         const name = field.name;
-        const incoming = initialData?.[name];
+        const incoming = initialDataSafe?.[name];
         if (field.type === "checkbox") {
           initialFormData[name] = Boolean(incoming);
         } else {
@@ -73,19 +92,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         }
       });
 
-      setFormData(initialFormData);
-      setColumns(configData.config.form.columns || 1);
+      setFormData((prev) =>
+        shallowEqualRecord(prev, initialFormData) ? prev : initialFormData,
+      );
+      const nextColumns = configData.config.form.columns || 1;
+      setColumns((prev) => (prev === nextColumns ? prev : nextColumns));
       return;
     }
-
-    if (config) {
-      config.new_case.table.forEach((field) => {
-        initialFormData[field.nom] = initialData[field.nom] || field.val || "";
-      });
-      setFormData(initialFormData);
-      setColumns(parseInt(config.new_case.column) || 1);
-    }
-  }, [config, configData, hasApiConfig, initialData]);
+  }, [configData, hasApiConfig, initialDataSafe]);
 
   const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => ({
@@ -110,11 +124,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       return;
     }
 
-    if (config) {
-      config.new_case.table.forEach((field) => {
-        resetData[field.nom] = field.val || "";
-      });
-    }
     setFormData(resetData);
   };
 
@@ -193,29 +202,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   // Grouper les champs par colonnes
-  const getFieldsByColumn = (colIndex: number) => {
-    if (!config) return [];
-    const fields = [];
-    const fieldsPerColumn = Math.ceil(config.new_case.table.length / columns);
-    const start = colIndex * fieldsPerColumn;
-    const end = start + fieldsPerColumn;
-
-    for (let i = start; i < end && i < config.new_case.table.length; i++) {
-      const field = config.new_case.table[i];
-      fields.push(
-        <div key={field.nom} className={`col-md-${12 / columns} w-100`}>
-          <FormField
-            field={field}
-            value={formData[field.nom] || ""}
-            onChange={handleInputChange}
-            options={config.new_case.options[field.nom]}
-          />
-        </div>,
-      );
-    }
-
-    return fields;
-  };
 
   return (
     <div className="">
@@ -226,14 +212,24 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               <div className="page-title-box">
                 <div className="page-title-right">
                   <Link to={`/dashboard/${entity}/create`}>
-                    <button className="btn btn-outline-primary mx-12">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary mx-12"
+                    >
                       {apiButtons?.[0]?.label}
                     </button>
                   </Link>
-                  <button className="btn btn-outline-primary mx-12">
-                    {apiButtons?.[1]?.label}
-                  </button>
+
+                  <Link to={`/dashboard/${entity}`}>
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary mx-12"
+                    >
+                      {apiButtons?.[1]?.label}
+                    </button>
+                  </Link>
                   <button
+                    type="button"
                     className="btn btn-outline-primary mx-12"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
@@ -400,22 +396,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                           );
                         })}
                       </div>
-                    ) : (
-                      <div className="row px-3">
-                        {Array.from({ length: columns }).map((_, colIndex) => (
-                          <div
-                            key={colIndex}
-                            className={`col-md-${12 / columns}`}
-                          >
-                            {config ? getFieldsByColumn(colIndex) : null}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    ) : null}
 
                     <hr className="hr-button" />
                     <div className="d-flex justify-content-end px-4">
-                      <button type="reset" className="btn btn-secondary mx-2" onClick={handleReset}>
+                      <button
+                        type="reset"
+                        className="btn btn-secondary mx-2"
+                        onClick={handleReset}
+                      >
                         Réinitialiser
                       </button>
                       <button type="submit" className="btn btn-primary mx-2">
