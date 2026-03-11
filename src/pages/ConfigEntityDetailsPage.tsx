@@ -445,7 +445,122 @@ export default function ConfigEntityDetailsPage() {
                   <hr />
 
                   {isLoading ? (
-                    <div className="px-3 text-muted">Chargement...</div>
+                    <div className="px-3">
+                      {/* Skeleton métadonnées - 4 cartes */}
+                      <div className="row gy-3 gx-3">
+                        {[...Array(4)].map((_, i) => (
+                          <div
+                            key={`meta-skel-${i}`}
+                            className="col-12 col-md-6"
+                          >
+                            <div className="card my-0 shadow-none border">
+                              <div className="card-body">
+                                <div
+                                  className="placeholder placeholder-glow rounded"
+                                  style={{ width: "40%", height: "14px" }}
+                                />
+                                <div
+                                  className="placeholder placeholder-glow rounded mt-2"
+                                  style={{ width: "70%", height: "20px" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Skeleton onglets */}
+                      <div className="mt-4 mb-3">
+                        <div className="d-flex gap-3">
+                          <div
+                            className="placeholder placeholder-glow rounded"
+                            style={{ width: "140px", height: "38px" }}
+                          />
+                          <div
+                            className="placeholder placeholder-glow rounded"
+                            style={{ width: "140px", height: "38px" }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Skeleton contenu 2 colonnes */}
+                      <div className="row">
+                        <div className="col-12 col-xl-5">
+                          <div className="card shadow-none border">
+                            <div className="card-body">
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                <div
+                                  className="placeholder placeholder-glow rounded"
+                                  style={{ width: "80px", height: "20px" }}
+                                />
+                                <div
+                                  className="placeholder placeholder-glow rounded"
+                                  style={{ width: "100px", height: "30px" }}
+                                />
+                              </div>
+                              <hr />
+                              {/* Liste items */}
+                              {[...Array(5)].map((_, i) => (
+                                <div
+                                  key={`list-skel-${i}`}
+                                  className="d-flex justify-content-between align-items-center py-2"
+                                >
+                                  <div className="w-75">
+                                    <div
+                                      className="placeholder placeholder-glow rounded"
+                                      style={{ width: "60%", height: "16px" }}
+                                    />
+                                    <div
+                                      className="placeholder placeholder-glow rounded mt-1"
+                                      style={{ width: "40%", height: "12px" }}
+                                    />
+                                  </div>
+                                  <div
+                                    className="placeholder placeholder-glow rounded"
+                                    style={{ width: "50px", height: "20px" }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-xl-7">
+                          <div className="card shadow-none border">
+                            <div className="card-body">
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                <div
+                                  className="placeholder placeholder-glow rounded"
+                                  style={{ width: "120px", height: "20px" }}
+                                />
+                                <div
+                                  className="placeholder placeholder-glow rounded"
+                                  style={{ width: "30%", height: "16px" }}
+                                />
+                              </div>
+                              <hr />
+                              {/* Formulaire skeleton */}
+                              <div className="row g-3">
+                                {[...Array(4)].map((_, i) => (
+                                  <div
+                                    key={`form-skel-${i}`}
+                                    className="col-12 col-md-6"
+                                  >
+                                    <div
+                                      className="placeholder placeholder-glow rounded"
+                                      style={{ width: "30%", height: "14px" }}
+                                    />
+                                    <div
+                                      className="placeholder placeholder-glow rounded mt-2"
+                                      style={{ width: "100%", height: "38px" }}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ) : error ? (
                     <div className="px-3 text-danger">
                       Erreur lors du chargement de la configuration
@@ -579,8 +694,6 @@ export default function ConfigEntityDetailsPage() {
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
                               </select>
                             ) : (
                               <div

@@ -26,7 +26,7 @@ function ConfigContent() {
                   >
                     Créer
                   </button>
-                
+
                   <div
                     className="modal fade"
                     id="staticBackdrop"
@@ -164,9 +164,40 @@ function ConfigContent() {
                   {/* <!-- Liste des entités --> */}
                   <div className="row g-3 px-3">
                     {isLoading ? (
-                      <div className="col-12 px-3 text-muted">
-                        Chargement...
-                      </div>
+                      // Skeleton cards pendant le chargement
+                      <>
+                        {[...Array(6)].map((_, i) => (
+                          <div
+                            key={`skeleton-${i}`}
+                            className="col-12 col-md-6 col-xl-4"
+                          >
+                            <div className="card h-100 shadow-sm border">
+                              <div className="card-body">
+                                <div className="d-flex justify-content-between align-items-start">
+                                  <div className="w-75">
+                                    <div
+                                      className="placeholder placeholder-glow rounded"
+                                      style={{ width: "60%", height: "24px" }}
+                                    />
+                                    <div
+                                      className="placeholder placeholder-glow rounded mt-2"
+                                      style={{ width: "40%", height: "16px" }}
+                                    />
+                                  </div>
+                                  <div
+                                    className="placeholder placeholder-glow rounded"
+                                    style={{ width: "32px", height: "32px" }}
+                                  />
+                                </div>
+                                <div
+                                  className="placeholder placeholder-glow rounded mt-3"
+                                  style={{ width: "50%", height: "16px" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </>
                     ) : error ? (
                       <div className="col-12 px-3 text-danger">
                         Erreur lors du chargement des configurations
