@@ -393,6 +393,58 @@ export default function ConfigEntityDetailsPage() {
     setIsDirty(true);
   };
 
+  // Drag and drop handlers
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (index: number) => {
+    setDraggingIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggingIndex === null || draggingIndex === index) return;
+    setDragOverIndex(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggingIndex === null || draggingIndex === dropIndex) {
+      setDraggingIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    if (activeTab === "form") {
+      setConfig((prev) => {
+        if (!prev) return prev;
+        const fields = [...prev.form.fields];
+        const [moved] = fields.splice(draggingIndex, 1);
+        fields.splice(dropIndex, 0, moved);
+        return { ...prev, form: { ...prev.form, fields } };
+      });
+      setSelectedFormIndex(dropIndex);
+    } else {
+      setConfig((prev) => {
+        if (!prev) return prev;
+        const columns = [...prev.table.columns];
+        const [moved] = columns.splice(draggingIndex, 1);
+        columns.splice(dropIndex, 0, moved);
+        return { ...prev, table: { ...prev.table, columns } };
+      });
+      setSelectedTableIndex(dropIndex);
+    }
+
+    setIsDirty(true);
+    setDraggingIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingIndex(null);
+    setDragOverIndex(null);
+  };
+
   return (
     <div className="">
       <div className="">
@@ -824,29 +876,48 @@ export default function ConfigEntityDetailsPage() {
                                 {activeTab === "form"
                                   ? formFields.map((f, idx) => {
                                       const active = idx === selectedFormIndex;
+                                      const isDragging = draggingIndex === idx;
+                                      const isDragOver =
+                                        dragOverIndex === idx &&
+                                        draggingIndex !== idx;
                                       return (
-                                        <button
+                                        <div
                                           key={`${f.name}-${idx}`}
-                                          type="button"
-                                          className={`list-group-item list-group-item-action d-flex justify-content-between align-items-start ${
-                                            active ? "active" : ""
-                                          }`}
+                                          draggable
+                                          onDragStart={() =>
+                                            handleDragStart(idx)
+                                          }
+                                          onDragOver={(e) =>
+                                            handleDragOver(e, idx)
+                                          }
+                                          onDrop={(e) => handleDrop(e, idx)}
+                                          onDragEnd={handleDragEnd}
                                           onClick={() =>
                                             setSelectedFormIndex(idx)
                                           }
+                                          className={`list-group-item list-group-item-action d-flex justify-content-between align-items-start cursor-pointer ${
+                                            active ? "active" : ""
+                                          } ${isDragging ? "opacity-50" : ""} ${isDragOver ? "border-primary border-2" : ""}`}
+                                          style={{ cursor: "grab" }}
                                         >
-                                          <div className="me-2">
-                                            <div className="fw-semibold">
-                                              {f.label}
-                                            </div>
-                                            <div
-                                              className={
-                                                active
-                                                  ? "text-white-50"
-                                                  : "text-muted"
-                                              }
-                                            >
-                                              {f.name} • {f.type}
+                                          <div className="me-2 d-flex align-items-center gap-2">
+                                            <i
+                                              className="uil uil-draggabledots text-muted"
+                                              style={{ cursor: "grab" }}
+                                            />
+                                            <div>
+                                              <div className="fw-semibold">
+                                                {f.label}
+                                              </div>
+                                              <div
+                                                className={
+                                                  active
+                                                    ? "text-white-50"
+                                                    : "text-muted"
+                                                }
+                                              >
+                                                {f.name} • {f.type}
+                                              </div>
                                             </div>
                                           </div>
                                           <div className="text-end">
@@ -872,34 +943,53 @@ export default function ConfigEntityDetailsPage() {
                                               </span>
                                             )}
                                           </div>
-                                        </button>
+                                        </div>
                                       );
                                     })
                                   : tableColumns.map((c, idx) => {
                                       const active = idx === selectedTableIndex;
+                                      const isDragging = draggingIndex === idx;
+                                      const isDragOver =
+                                        dragOverIndex === idx &&
+                                        draggingIndex !== idx;
                                       return (
-                                        <button
+                                        <div
                                           key={`${c.name}-${idx}`}
-                                          type="button"
-                                          className={`list-group-item list-group-item-action d-flex justify-content-between align-items-start ${
-                                            active ? "active" : ""
-                                          }`}
+                                          draggable
+                                          onDragStart={() =>
+                                            handleDragStart(idx)
+                                          }
+                                          onDragOver={(e) =>
+                                            handleDragOver(e, idx)
+                                          }
+                                          onDrop={(e) => handleDrop(e, idx)}
+                                          onDragEnd={handleDragEnd}
                                           onClick={() =>
                                             setSelectedTableIndex(idx)
                                           }
+                                          className={`list-group-item list-group-item-action d-flex justify-content-between align-items-start cursor-pointer ${
+                                            active ? "active" : ""
+                                          } ${isDragging ? "opacity-50" : ""} ${isDragOver ? "border-primary border-2" : ""}`}
+                                          style={{ cursor: "grab" }}
                                         >
-                                          <div className="me-2">
-                                            <div className="fw-semibold">
-                                              {c.label}
-                                            </div>
-                                            <div
-                                              className={
-                                                active
-                                                  ? "text-white-50"
-                                                  : "text-muted"
-                                              }
-                                            >
-                                              {c.name}
+                                          <div className="me-2 d-flex align-items-center gap-2">
+                                            <i
+                                              className="uil uil-draggabledots text-muted"
+                                              style={{ cursor: "grab" }}
+                                            />
+                                            <div>
+                                              <div className="fw-semibold">
+                                                {c.label}
+                                              </div>
+                                              <div
+                                                className={
+                                                  active
+                                                    ? "text-white-50"
+                                                    : "text-muted"
+                                                }
+                                              >
+                                                {c.name}
+                                              </div>
                                             </div>
                                           </div>
                                           <div className="text-end">
@@ -925,7 +1015,7 @@ export default function ConfigEntityDetailsPage() {
                                               </span>
                                             )}
                                           </div>
-                                        </button>
+                                        </div>
                                       );
                                     })}
                               </div>
