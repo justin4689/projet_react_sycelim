@@ -31,3 +31,5 @@ export const useConfigByName = <TConfig = unknown>(configName: string | undefine
     ...options, 
   });
 };
+
+

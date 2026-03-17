@@ -19,13 +19,11 @@ function ConfigContent() {
             <div className="col-12">
               <div className="page-title-box">
                 <div className="page-title-right">
-                  <button
-                    className="btn btn-outline-primary mx-12"
-                    data-bs-toggle="modal"
-                    data-bs-target="#danger-alert-modal"
-                  >
-                    Créer
-                  </button>
+                  <Link to="/dashboard/configurations/create">
+                    <button className="btn btn-outline-primary mx-12">
+                      Créer
+                    </button>
+                  </Link>
 
                   <div
                     className="modal fade"

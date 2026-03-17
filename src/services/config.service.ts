@@ -1,5 +1,6 @@
 import { httpClient } from '@/api/httpClient';
 import { endpoints } from '@/api/endpoints';
+import type { CreateEntityPayload } from '@/lib/types/config.types';
 
 export const configService = {
   getConfig: async (params: Record<string, string> = {}) => {
@@ -10,6 +11,11 @@ export const configService = {
   getConfigById: async (id: string | undefined) => {
     if (!id) throw new Error('Config ID is required');
     return httpClient.get(`${endpoints.config}/${id}`);
+  },
+
+
+  createConfig: async (data: CreateEntityPayload) => {
+    return httpClient.post(`${endpoints.config}`, data);
   },
 
 

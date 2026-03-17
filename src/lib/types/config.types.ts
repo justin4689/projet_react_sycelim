@@ -85,3 +85,32 @@ export interface ConfigDetailResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+
+export interface ConfigData {
+  form: {
+    columns: number;
+    fields: Array<{
+      name: string;
+      label: string;
+      type: string;
+      required: boolean;
+      colSpan?: number;
+      options?: Array<{ label: string; value: string }>;
+    }>;
+  };
+  table: {
+    columns: Array<{
+      name: string;
+      label: string;
+      sortable: boolean;
+    }>;
+  };
+  buttons?: Array<{ label: string }>;
+}
+
+export interface CreateEntityPayload {
+  label: string;
+  entity: string;
+  config: ConfigData;
+}

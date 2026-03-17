@@ -15,6 +15,7 @@ import { DynamicPage } from "./pages/DynamicPage";
 import DynamicFormPage from "./pages/DynamicFormPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import DynamicDetailsPage from "./pages/DynamicDetailsPage";
+import ConfigEntityCreatePage from "./pages/ConfigEntityCreatePage";
 
 function App() {
   return (
@@ -36,7 +37,9 @@ function App() {
               path="configurations/:id"
               element={<ConfigEntityDetailsPage />}
 
+            
             />
+            <Route path="configurations/create" element={<ConfigEntityCreatePage />} />
              
             <Route path="sessions" element={<SessionContent />} />
             <Route path="session-details/:id" element={<SessionDetails />} />
