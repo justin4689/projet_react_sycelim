@@ -22,14 +22,7 @@ export default function Sidebar() {
       children: [{ label: "Liste des sessions", href: "/dashboard/sessions" }],
     },
 
-    {
-      id: "sidebarconfig",
-      title: "Configuration",
-      icon: "uil-cog",
-      name: "configurations",
-      type: "static",
-      href: "/dashboard/configurations",
-    },
+  
   ];
 
   return (

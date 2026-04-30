@@ -8,14 +8,12 @@ import ResetPassword from "./pages/ResetPassword";
 import DashboardLayout from "./layouts/DashboardLayout";
 import SessionContent from "./components/SessionContent";
 import SessionDetails from "./components/SessionDetails";
-import ConfigList from "./pages/ConfigList";
-import ConfigEntityDetailsPage from "./pages/ConfigEntityDetailsPage";
+
 import { DynamicPage } from "./pages/DynamicPage";
 
 import DynamicFormPage from "./pages/DynamicFormPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import DynamicDetailsPage from "./pages/DynamicDetailsPage";
-import ConfigEntityCreatePage from "./pages/ConfigEntityCreatePage";
 
 function App() {
   return (
@@ -32,14 +30,6 @@ function App() {
             {/* <Route path="user-create" element={<UserCreatePage />} /> */}
             {/* <Route path="users/:id" element={<UserDetailsPage />} />  */}
 
-            <Route path="configurations" element={<ConfigList />} />
-            <Route
-              path="configurations/:id"
-              element={<ConfigEntityDetailsPage />}
-
-            
-            />
-            <Route path="configurations/create" element={<ConfigEntityCreatePage />} />
              
             <Route path="sessions" element={<SessionContent />} />
             <Route path="session-details/:id" element={<SessionDetails />} />
